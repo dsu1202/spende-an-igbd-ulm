@@ -8,36 +8,39 @@ interface Props {
 const amounts = [5, 10, 20, 50];
 
 const AmountScreen = ({ onConfirm }: Props) => {
-  const [selected, setSelected] = useState<number | null>(null);
   const [customMode, setCustomMode] = useState(false);
   const [customValue, setCustomValue] = useState("");
 
-  const activeAmount = customMode ? Number(customValue) : selected;
-  const canProceed = activeAmount && activeAmount > 0;
+  const handleSelect = (amt: number) => {
+    onConfirm(amt);
+  };
+
+  const handleCustomConfirm = () => {
+    const val = Number(customValue);
+    if (val > 0) onConfirm(val);
+  };
 
   return (
-    <div className="flex flex-col items-center justify-center h-full px-12 animate-fade-in">
-      <h1 className="text-3xl font-bold font-heading text-foreground mb-12">
+    <div className="flex flex-col items-center justify-center h-full px-16 animate-fade-in">
+      <h1 className="text-3xl font-bold font-heading text-foreground mb-14">
         Wie viel möchtest du spenden?
       </h1>
 
       {!customMode ? (
         <>
-          <div className="grid grid-cols-2 gap-5 w-full max-w-lg mb-8">
+          <div className="grid grid-cols-4 gap-5 w-full max-w-4xl mb-10">
             {amounts.map((amt) => {
               const isRecommended = amt === 20;
-              const isSelected = selected === amt;
               return (
                 <button
                   key={amt}
-                  onClick={() => setSelected(amt)}
-                  className={`kiosk-card flex flex-col items-center justify-center min-h-[120px] text-3xl font-bold font-heading relative
-                    ${isSelected ? "kiosk-card-selected" : ""}
-                    ${isRecommended && !isSelected ? "bg-accent" : ""}
+                  onClick={() => handleSelect(amt)}
+                  className={`kiosk-card flex flex-col items-center justify-center aspect-video text-3xl font-bold font-heading relative
+                    ${isRecommended ? "bg-accent ring-2 ring-primary" : ""}
                   `}
                 >
                   {isRecommended && (
-                    <span className="absolute top-3 right-3 text-xs font-semibold font-body text-accent-foreground bg-accent px-3 py-1 rounded-full">
+                    <span className="absolute top-3 right-3 text-xs font-semibold font-body text-accent-foreground bg-primary/10 px-3 py-1 rounded-full">
                       Empfohlen
                     </span>
                   )}
@@ -48,14 +51,14 @@ const AmountScreen = ({ onConfirm }: Props) => {
           </div>
 
           <button
-            onClick={() => { setCustomMode(true); setSelected(null); }}
-            className="text-lg font-medium text-primary underline underline-offset-4 mb-8"
+            onClick={() => setCustomMode(true)}
+            className="text-lg font-medium text-primary underline underline-offset-4"
           >
             Eigenen Betrag wählen
           </button>
         </>
       ) : (
-        <div className="w-full max-w-md mb-8 space-y-5">
+        <div className="w-full max-w-md space-y-6">
           <div className="kiosk-card flex items-center gap-4">
             <input
               type="number"
@@ -68,26 +71,22 @@ const AmountScreen = ({ onConfirm }: Props) => {
             />
             <span className="text-3xl font-bold text-muted-foreground">€</span>
           </div>
-          <button
-            onClick={() => { setCustomMode(false); setCustomValue(""); }}
-            className="text-lg font-medium text-primary underline underline-offset-4"
-          >
-            Zurück zur Auswahl
-          </button>
-        </div>
-      )}
-
-      {canProceed && (
-        <div className="flex items-center gap-6 animate-fade-in">
-          <p className="text-lg text-muted-foreground max-w-xs text-right leading-relaxed">
-            Karte auf das Kartenlesegerät halten, um zu spenden.
-          </p>
-          <button
-            onClick={() => onConfirm(activeAmount!)}
-            className="bg-primary text-primary-foreground rounded-full w-20 h-20 flex items-center justify-center active:scale-95 transition-transform"
-          >
-            <ArrowRight className="w-10 h-10" />
-          </button>
+          <div className="flex items-center justify-between">
+            <button
+              onClick={() => { setCustomMode(false); setCustomValue(""); }}
+              className="text-lg font-medium text-primary underline underline-offset-4"
+            >
+              Zurück zur Auswahl
+            </button>
+            {Number(customValue) > 0 && (
+              <button
+                onClick={handleCustomConfirm}
+                className="bg-primary text-primary-foreground rounded-full w-16 h-16 flex items-center justify-center active:scale-95 transition-transform animate-fade-in"
+              >
+                <ArrowRight className="w-8 h-8" />
+              </button>
+            )}
+          </div>
         </div>
       )}
     </div>

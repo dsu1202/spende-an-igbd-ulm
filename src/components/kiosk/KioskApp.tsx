@@ -10,7 +10,7 @@ type Screen = "start" | "purpose" | "amount" | "payment" | "thankyou";
 const KioskApp = () => {
   const [screen, setScreen] = useState<Screen>("start");
   const [_purpose, setPurpose] = useState("");
-  const [_amount, setAmount] = useState(0);
+  const [amount, setAmount] = useState(0);
 
   const reset = useCallback(() => {
     setScreen("start");
@@ -40,7 +40,7 @@ const KioskApp = () => {
         />
       )}
       {screen === "payment" && (
-        <PaymentScreen onSuccess={() => setScreen("thankyou")} />
+        <PaymentScreen amount={amount} onSuccess={() => setScreen("thankyou")} />
       )}
       {screen === "thankyou" && <ThankYouScreen onReset={reset} />}
     </div>
