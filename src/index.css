@@ -80,7 +80,7 @@
   }
 
   .kiosk-card-selected {
-    @apply ring-3 ring-primary bg-accent/30;
+    @apply ring-2 ring-primary bg-accent/30;
   }
 }
 
