@@ -40,10 +40,6 @@ const PaymentScreen = ({ amount, onSuccess }: Props) => {
         </div>
       </div>
 
-      {/* Loading bar */}
-      <div className="w-48 h-1.5 rounded-full bg-primary/10 overflow-hidden">
-        <div className="h-full bg-primary/50 rounded-full animate-loading-bar" />
-      </div>
     </div>
   );
 };
