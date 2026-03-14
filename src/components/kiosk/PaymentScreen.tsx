@@ -6,11 +6,12 @@ interface Props {
   amount: number;
   purpose: string;
   onSuccess: () => void;
+  onCancel: () => void;
 }
 
 const SUMUP_AFFILIATE_KEY = "sup_afk_PYhm1NegyIYiml8qmL3d17PUYhQQ2Dxu";
 
-const PaymentScreen = ({ amount, purpose, onSuccess }: Props) => {
+const PaymentScreen = ({ amount, purpose, onSuccess, onCancel }: Props) => {
   const [paymentStarted, setPaymentStarted] = useState(false);
   const [showRetry, setShowRetry] = useState(false);
 
@@ -125,11 +126,11 @@ const PaymentScreen = ({ amount, purpose, onSuccess }: Props) => {
                   Erneut versuchen
                 </Button>
                 <Button
-                  onClick={onSuccess}
+                  onClick={onCancel}
                   variant="ghost"
                   className="rounded-xl px-6 py-3 text-lg font-semibold text-primary-foreground/70 hover:text-primary-foreground"
                 >
-                  Überspringen
+                  Abbrechen
                 </Button>
               </div>
             </div>
