@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ArrowRight } from "lucide-react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 
 interface Props {
   onConfirm: (amount: number) => void;
@@ -49,35 +49,37 @@ const AmountScreen = ({ onConfirm }: Props) => {
           </button>
         </>
       ) : (
-        <div className="w-full max-w-md space-y-8">
-          <div className="rounded-3xl bg-card border border-border p-8 flex items-center gap-4" style={{ boxShadow: 'var(--shadow-card)' }}>
+        <div className="flex items-center justify-center gap-8 w-full max-w-2xl">
+          {/* Zurück-Pfeil */}
+          <button
+            onClick={() => { setCustomMode(false); setCustomValue(""); }}
+            className="flex-shrink-0 w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center active:scale-95 transition-all hover:bg-primary/15"
+          >
+            <ArrowLeft className="w-9 h-9 text-primary" />
+          </button>
+
+          {/* Betrag in der Mitte */}
+          <div className="flex-1 rounded-3xl bg-card border border-border p-8 flex items-center justify-center gap-3" style={{ boxShadow: 'var(--shadow-card)' }}>
             <input
               type="number"
               inputMode="numeric"
               autoFocus
-              placeholder="Betrag"
+              placeholder="0"
               value={customValue}
               onChange={(e) => setCustomValue(e.target.value)}
-              className="flex-1 text-5xl font-extrabold font-heading bg-transparent outline-none text-foreground placeholder:text-muted-foreground/40 text-center"
+              className="w-32 text-6xl font-extrabold font-heading bg-transparent outline-none text-foreground placeholder:text-muted-foreground/30 text-center"
             />
-            <span className="text-4xl font-bold text-muted-foreground">€</span>
+            <span className="text-5xl font-bold text-muted-foreground">€</span>
           </div>
-          <div className="flex items-center justify-between">
-            <button
-              onClick={() => { setCustomMode(false); setCustomValue(""); }}
-              className="text-lg font-semibold text-primary bg-primary/10 px-6 py-3 rounded-full hover:bg-primary/15 transition-colors"
-            >
-              Zurück
-            </button>
-            {Number(customValue) > 0 && (
-              <button
-                onClick={handleCustomConfirm}
-                className="bg-primary text-primary-foreground rounded-full w-16 h-16 flex items-center justify-center active:scale-95 transition-transform animate-fade-in shadow-lg"
-              >
-                <ArrowRight className="w-8 h-8" />
-              </button>
-            )}
-          </div>
+
+          {/* Weiter-Pfeil */}
+          <button
+            onClick={handleCustomConfirm}
+            disabled={Number(customValue) <= 0}
+            className="flex-shrink-0 w-20 h-20 rounded-full bg-gradient-to-br from-primary to-primary/85 text-primary-foreground flex items-center justify-center active:scale-95 transition-all shadow-lg disabled:opacity-30 disabled:scale-100"
+          >
+            <ArrowRight className="w-9 h-9" />
+          </button>
         </div>
       )}
     </div>
