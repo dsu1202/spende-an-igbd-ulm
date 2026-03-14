@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
-import { MoveRight, CreditCard, RotateCcw } from "lucide-react";
+import { MoveRight, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface Props {
