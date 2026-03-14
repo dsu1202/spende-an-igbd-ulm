@@ -29,10 +29,7 @@ const PaymentScreen = ({ amount, onSuccess }: Props) => {
         <div className="relative flex items-center justify-between gap-8">
           <div className="space-y-2">
             <p className="text-3xl font-bold font-heading leading-snug">
-              Karte an das Kartenlesegerät halten
-            </p>
-            <p className="text-lg font-medium opacity-80">
-              zum Spenden
+              Halte deine Karte an das Kartenlesegerät zum Spenden
             </p>
           </div>
           
