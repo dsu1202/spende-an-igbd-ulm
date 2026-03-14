@@ -37,17 +37,41 @@ const PaymentScreen = ({ amount, purpose, onSuccess }: Props) => {
     return () => clearTimeout(retryTimer);
   }, [buildSumUpDeepLink]);
 
-  // Listen for return from SumUp app
+  // Listen for return from SumUp app via callback URL parameters
   useEffect(() => {
     const handleVisibility = () => {
       if (document.visibilityState === "visible" && paymentStarted) {
-        // User returned from SumUp app – assume success
-        const timer = setTimeout(onSuccess, 1500);
-        return () => clearTimeout(timer);
+        const params = new URLSearchParams(window.location.search);
+        const status = params.get("smp-status");
+
+        if (status === "success") {
+          // Clear callback params from URL
+          window.history.replaceState({}, "", window.location.pathname);
+          const timer = setTimeout(onSuccess, 1500);
+          return () => clearTimeout(timer);
+        } else if (status === "failed" || status === "abort") {
+          window.history.replaceState({}, "", window.location.pathname);
+          setPaymentStarted(false);
+          setShowRetry(true);
+        }
+        // If no smp-status param yet, do nothing (user may have just switched apps)
       }
     };
 
     document.addEventListener("visibilitychange", handleVisibility);
+
+    // Also check on mount in case we returned with params already set
+    const params = new URLSearchParams(window.location.search);
+    const status = params.get("smp-status");
+    if (status === "success" && paymentStarted) {
+      window.history.replaceState({}, "", window.location.pathname);
+      setTimeout(onSuccess, 1500);
+    } else if ((status === "failed" || status === "abort") && paymentStarted) {
+      window.history.replaceState({}, "", window.location.pathname);
+      setPaymentStarted(false);
+      setShowRetry(true);
+    }
+
     return () => document.removeEventListener("visibilitychange", handleVisibility);
   }, [paymentStarted, onSuccess]);
 
