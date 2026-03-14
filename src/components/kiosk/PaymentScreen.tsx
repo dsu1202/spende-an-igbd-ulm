@@ -10,7 +10,6 @@ interface Props {
 const SUMUP_AFFILIATE_KEY = "sup_afk_PYhm1NegyIYiml8qmL3d17PUYhQQ2Dxu";
 
 const PaymentScreen = ({ amount, purpose, onSuccess }: Props) => {
-  const [showRetry, setShowRetry] = useState(false);
 
   const buildSumUpDeepLink = useCallback(() => {
     const params = new URLSearchParams({
