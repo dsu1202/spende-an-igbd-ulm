@@ -22,11 +22,11 @@ const PaymentScreen = ({ amount, purpose, onSuccess }: Props) => {
       </div>
 
       {/* Center: Card instruction with arrow */}
-      <div className="flex items-center gap-6 bg-primary text-primary-foreground rounded-2xl px-12 py-8 active:scale-95 transition-transform">
+      <div className="flex items-center gap-6 bg-primary text-primary-foreground rounded-2xl px-12 py-8">
         <p className="text-2xl font-semibold font-heading leading-relaxed">
           Karte an das Kartenlesegerät halten zum Spenden
         </p>
-        <ArrowRight className="w-10 h-10 flex-shrink-0 animate-pulse-gentle" />
+        <ArrowRight className="w-10 h-10 flex-shrink-0 animate-bounce-right" />
       </div>
 
       {/* Animated dots */}
