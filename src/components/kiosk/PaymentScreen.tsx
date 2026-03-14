@@ -40,8 +40,7 @@ const PaymentScreen = ({ amount, purpose, onSuccess }: Props) => {
   // Listen for return from SumUp app
   useEffect(() => {
     const handleVisibility = () => {
-      if (document.visibilityState === "visible" && paymentStarted) {
-        // User returned from SumUp app – assume success
+      if (document.visibilityState === "visible") {
         const timer = setTimeout(onSuccess, 1500);
         return () => clearTimeout(timer);
       }
@@ -49,7 +48,7 @@ const PaymentScreen = ({ amount, purpose, onSuccess }: Props) => {
 
     document.addEventListener("visibilitychange", handleVisibility);
     return () => document.removeEventListener("visibilitychange", handleVisibility);
-  }, [paymentStarted, onSuccess]);
+  }, [onSuccess]);
 
   return (
     <div className="flex flex-col items-center justify-center h-full px-12 animate-fade-in gap-10">
