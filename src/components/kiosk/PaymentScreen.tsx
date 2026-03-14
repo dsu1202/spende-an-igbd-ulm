@@ -1,6 +1,5 @@
-import { useEffect, useState, useCallback } from "react";
-import { MoveRight, RotateCcw } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { useEffect, useCallback } from "react";
+import { MoveRight } from "lucide-react";
 
 interface Props {
   amount: number;
