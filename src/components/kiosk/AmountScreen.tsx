@@ -50,12 +50,15 @@ const AmountScreen = ({ onConfirm }: Props) => {
         </>
       ) : (
         <div className="flex items-center justify-center gap-8 w-full max-w-2xl">
-          {/* Zurück-Pfeil */}
+          {/* Zurück */}
           <button
             onClick={() => { setCustomMode(false); setCustomValue(""); }}
-            className="flex-shrink-0 w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center active:scale-95 transition-all hover:bg-primary/15"
+            className="flex-shrink-0 flex flex-col items-center gap-2 active:scale-95 transition-all"
           >
-            <ArrowLeft className="w-9 h-9 text-primary" />
+            <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center hover:bg-primary/15 transition-colors">
+              <ArrowLeft className="w-7 h-7 text-primary" />
+            </div>
+            <span className="text-sm font-semibold text-primary">Zurück</span>
           </button>
 
           {/* Betrag in der Mitte */}
@@ -72,13 +75,16 @@ const AmountScreen = ({ onConfirm }: Props) => {
             <span className="text-5xl font-bold text-muted-foreground">€</span>
           </div>
 
-          {/* Weiter-Pfeil */}
+          {/* Weiter */}
           <button
             onClick={handleCustomConfirm}
             disabled={Number(customValue) <= 0}
-            className="flex-shrink-0 w-20 h-20 rounded-full bg-gradient-to-br from-primary to-primary/85 text-primary-foreground flex items-center justify-center active:scale-95 transition-all shadow-lg disabled:opacity-30 disabled:scale-100"
+            className="flex-shrink-0 flex flex-col items-center gap-2 active:scale-95 transition-all disabled:opacity-30 disabled:scale-100"
           >
-            <ArrowRight className="w-9 h-9" />
+            <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary to-primary/85 text-primary-foreground flex items-center justify-center shadow-lg">
+              <ArrowRight className="w-7 h-7" />
+            </div>
+            <span className="text-sm font-semibold text-primary">Weiter</span>
           </button>
         </div>
       )}
