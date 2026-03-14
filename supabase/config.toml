@@ -1,1 +1,4 @@
 project_id = "gsqglrdiyaxfvuhuxhmk"
+
+[functions.sumup-checkout]
+verify_jwt = false
