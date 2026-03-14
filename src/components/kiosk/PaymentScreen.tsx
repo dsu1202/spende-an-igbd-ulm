@@ -126,11 +126,11 @@ const PaymentScreen = ({ amount, purpose, onSuccess, onCancel }: Props) => {
                   Erneut versuchen
                 </Button>
                 <Button
-                  onClick={onSuccess}
+                  onClick={onCancel}
                   variant="ghost"
                   className="rounded-xl px-6 py-3 text-lg font-semibold text-primary-foreground/70 hover:text-primary-foreground"
                 >
-                  Überspringen
+                  Abbrechen
                 </Button>
               </div>
             </div>
