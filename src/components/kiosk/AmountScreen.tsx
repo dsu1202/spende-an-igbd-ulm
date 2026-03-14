@@ -29,25 +29,15 @@ const AmountScreen = ({ onConfirm }: Props) => {
       {!customMode ? (
         <>
           <div className="grid grid-cols-4 gap-8 w-full max-w-4xl mb-12">
-            {amounts.map((amt) => {
-              const isRecommended = amt === 20;
-              return (
-                <button
-                  key={amt}
-                  onClick={() => handleSelect(amt)}
-                  className={`kiosk-card flex flex-col items-center justify-center aspect-video text-4xl font-bold font-heading relative
-                    ${isRecommended ? "bg-accent ring-2 ring-primary" : ""}
-                  `}
-                >
-                  {isRecommended && (
-                    <span className="absolute top-3 right-3 text-xs font-semibold font-body text-accent-foreground bg-primary/10 px-3 py-1 rounded-full">
-                      Empfohlen
-                    </span>
-                  )}
-                  <span className="text-foreground">{amt} €</span>
-                </button>
-              );
-            })}
+            {amounts.map((amt) => (
+              <button
+                key={amt}
+                onClick={() => handleSelect(amt)}
+                className="bg-primary text-primary-foreground rounded-2xl flex flex-col items-center justify-center aspect-[4/3] text-5xl font-bold font-heading active:scale-95 transition-transform"
+              >
+                {amt} €
+              </button>
+            ))}
           </div>
 
           <button
