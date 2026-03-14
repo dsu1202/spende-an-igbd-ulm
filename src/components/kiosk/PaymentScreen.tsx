@@ -6,12 +6,11 @@ interface Props {
   amount: number;
   purpose: string;
   onSuccess: () => void;
-  onCancel: () => void;
 }
 
 const SUMUP_AFFILIATE_KEY = "sup_afk_PYhm1NegyIYiml8qmL3d17PUYhQQ2Dxu";
 
-const PaymentScreen = ({ amount, purpose, onSuccess, onCancel }: Props) => {
+const PaymentScreen = ({ amount, purpose, onSuccess }: Props) => {
   const [paymentStarted, setPaymentStarted] = useState(false);
   const [showRetry, setShowRetry] = useState(false);
 
@@ -38,41 +37,17 @@ const PaymentScreen = ({ amount, purpose, onSuccess, onCancel }: Props) => {
     return () => clearTimeout(retryTimer);
   }, [buildSumUpDeepLink]);
 
-  // Listen for return from SumUp app via callback URL parameters
+  // Listen for return from SumUp app
   useEffect(() => {
     const handleVisibility = () => {
       if (document.visibilityState === "visible" && paymentStarted) {
-        const params = new URLSearchParams(window.location.search);
-        const status = params.get("smp-status");
-
-        if (status === "success") {
-          // Clear callback params from URL
-          window.history.replaceState({}, "", window.location.pathname);
-          const timer = setTimeout(onSuccess, 1500);
-          return () => clearTimeout(timer);
-        } else if (status === "failed" || status === "abort") {
-          window.history.replaceState({}, "", window.location.pathname);
-          setPaymentStarted(false);
-          setShowRetry(true);
-        }
-        // If no smp-status param yet, do nothing (user may have just switched apps)
+        // User returned from SumUp app – assume success
+        const timer = setTimeout(onSuccess, 1500);
+        return () => clearTimeout(timer);
       }
     };
 
     document.addEventListener("visibilitychange", handleVisibility);
-
-    // Also check on mount in case we returned with params already set
-    const params = new URLSearchParams(window.location.search);
-    const status = params.get("smp-status");
-    if (status === "success" && paymentStarted) {
-      window.history.replaceState({}, "", window.location.pathname);
-      setTimeout(onSuccess, 1500);
-    } else if ((status === "failed" || status === "abort") && paymentStarted) {
-      window.history.replaceState({}, "", window.location.pathname);
-      setPaymentStarted(false);
-      setShowRetry(true);
-    }
-
     return () => document.removeEventListener("visibilitychange", handleVisibility);
   }, [paymentStarted, onSuccess]);
 
@@ -126,11 +101,11 @@ const PaymentScreen = ({ amount, purpose, onSuccess, onCancel }: Props) => {
                   Erneut versuchen
                 </Button>
                 <Button
-                  onClick={onCancel}
+                  onClick={onSuccess}
                   variant="ghost"
                   className="rounded-xl px-6 py-3 text-lg font-semibold text-primary-foreground/70 hover:text-primary-foreground"
                 >
-                  Abbrechen
+                  Überspringen
                 </Button>
               </div>
             </div>
