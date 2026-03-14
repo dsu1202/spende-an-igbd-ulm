@@ -91,7 +91,12 @@
 
 @keyframes bounce-right {
   0%, 100% { transform: translateX(0); opacity: 1; }
-  50% { transform: translateX(8px); opacity: 0.6; }
+  50% { transform: translateX(10px); opacity: 0.5; }
+}
+
+@keyframes loading-bar {
+  0% { width: 0%; }
+  100% { width: 100%; }
 }
 
 @keyframes fade-in {
@@ -105,6 +110,10 @@
 
 .animate-bounce-right {
   animation: bounce-right 1.5s ease-in-out infinite;
+}
+
+.animate-loading-bar {
+  animation: loading-bar 6s ease-in-out forwards;
 }
 
 .animate-fade-in {

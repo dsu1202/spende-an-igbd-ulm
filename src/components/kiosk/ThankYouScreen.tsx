@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { CheckCircle } from "lucide-react";
+import { Check } from "lucide-react";
 
 interface Props {
   onReset: () => void;
@@ -12,11 +12,14 @@ const ThankYouScreen = ({ onReset }: Props) => {
   }, [onReset]);
 
   return (
-    <div className="flex flex-col items-center justify-center h-full px-12 animate-fade-in">
-      <CheckCircle className="w-28 h-28 text-primary mb-10" strokeWidth={1.5} />
+    <div className="flex flex-col items-center justify-center h-full px-12 animate-fade-in gap-8">
+      {/* Success icon */}
+      <div className="w-24 h-24 rounded-full bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center shadow-lg">
+        <Check className="w-14 h-14 text-primary-foreground" strokeWidth={3} />
+      </div>
 
-      <div className="text-center space-y-4 mb-10">
-        <p className="text-2xl font-semibold font-heading text-foreground">
+      <div className="text-center space-y-3">
+        <p className="text-3xl font-extrabold font-heading text-foreground tracking-tight">
           Möge deine Spende angenommen werden.
         </p>
         <p className="text-xl text-muted-foreground italic">
@@ -27,8 +30,8 @@ const ThankYouScreen = ({ onReset }: Props) => {
         </p>
       </div>
 
-      <div className="text-center space-y-2">
-        <p className="text-lg text-muted-foreground">
+      <div className="text-center space-y-1 mt-2">
+        <p className="text-lg text-muted-foreground font-medium">
           Vielen Dank für deine Unterstützung.
         </p>
         <p className="text-base text-muted-foreground">
