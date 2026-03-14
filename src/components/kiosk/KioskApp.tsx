@@ -22,7 +22,6 @@ const KioskApp = () => {
       )}
       {screen === "amount" && (
         <AmountScreen
-          onBack={() => setScreen("start")}
           onConfirm={(a) => {
             setAmount(a);
             setScreen("payment");
