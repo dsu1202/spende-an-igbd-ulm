@@ -18,25 +18,25 @@ const ThankYouScreen = ({ onReset }: Props) => {
         <Check className="w-14 h-14 text-primary-foreground" strokeWidth={3} />
       </div>
 
-      <div className="text-center space-y-3">
+      <div className="text-center space-y-2">
         <p className="text-3xl font-extrabold font-heading text-foreground tracking-tight">
-          Möge deine Spende angenommen werden.
-        </p>
-        <p className="text-xl text-muted-foreground italic">
-          Taqabbal minna wa minkum.
-        </p>
-        <p className="text-xl text-muted-foreground">
-          Neka tvoja sadaka bude primljena.
+          Vielen Dank · Hvala puno
         </p>
       </div>
 
-      <div className="text-center space-y-1 mt-2">
-        <p className="text-lg text-muted-foreground font-medium">
-          Vielen Dank für deine Unterstützung.
-        </p>
-        <p className="text-base text-muted-foreground">
-          Hvala ti na tvojoj podršci.
-        </p>
+      <div className="text-center space-y-4 mt-2 max-w-xl">
+        <div className="space-y-1">
+          <p className="text-lg text-muted-foreground italic">
+            „Was ihr an Gutem spendet, kommt euch selbst zugute."
+          </p>
+          <p className="text-base text-muted-foreground font-medium">(2:272)</p>
+        </div>
+        <div className="space-y-1">
+          <p className="text-lg text-muted-foreground italic">
+            „Što god udijelite od dobra, to je za vaše dobro."
+          </p>
+          <p className="text-base text-muted-foreground font-medium">(2:272)</p>
+        </div>
       </div>
     </div>
   );
