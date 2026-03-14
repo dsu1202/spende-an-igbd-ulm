@@ -68,7 +68,7 @@ const AmountScreen = ({ onConfirm }: Props) => {
               placeholder="0"
               value={customValue}
               onChange={(e) => setCustomValue(e.target.value)}
-              className="w-32 text-6xl font-extrabold font-heading bg-transparent outline-none text-foreground placeholder:text-muted-foreground/30 text-center"
+              className="w-48 text-6xl font-extrabold font-heading bg-transparent outline-none text-foreground placeholder:text-muted-foreground/30 text-center"
             />
             <span className="text-5xl font-bold text-muted-foreground">€</span>
           </div>
