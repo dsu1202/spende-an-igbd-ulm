@@ -73,28 +73,6 @@ const PaymentScreen = ({ amount, purpose, onSuccess }: Props) => {
           </div>
         </div>
 
-        {showRetry && (
-          <div className="relative mt-8 flex flex-col items-center gap-4">
-            <p className="text-base opacity-70">SumUp App nicht geöffnet?</p>
-            <div className="flex gap-4">
-              <Button
-                onClick={startPayment}
-                variant="secondary"
-                className="rounded-xl px-6 py-3 text-lg font-semibold gap-2"
-              >
-                <RotateCcw className="w-5 h-5" />
-                Erneut versuchen
-              </Button>
-              <Button
-                onClick={onSuccess}
-                variant="ghost"
-                className="rounded-xl px-6 py-3 text-lg font-semibold text-primary-foreground/70 hover:text-primary-foreground"
-              >
-                Überspringen
-              </Button>
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );
