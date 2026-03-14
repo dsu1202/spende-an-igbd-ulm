@@ -57,21 +57,10 @@ const PaymentScreen = ({ amount, purpose, onSuccess }: Props) => {
         <span className="text-7xl font-extrabold font-heading text-primary tracking-tight">{amount} €</span>
       </div>
 
-      {!paymentStarted ? (
-        /* Start payment button */
-        <Button
-          onClick={startPayment}
-          className="rounded-3xl px-14 py-10 text-3xl font-bold font-heading gap-4 bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg"
-          size="lg"
-        >
-          <CreditCard className="w-10 h-10" />
-          Zahlung starten
-        </Button>
-      ) : (
-        /* Instruction card */
-        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary to-primary/80 text-primary-foreground px-14 py-10 max-w-2xl w-full">
-          <div className="absolute -top-10 -right-10 w-40 h-40 rounded-full bg-primary-foreground/5" />
-          <div className="absolute -bottom-6 -left-6 w-24 h-24 rounded-full bg-primary-foreground/5" />
+      {/* Instruction card */}
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary to-primary/80 text-primary-foreground px-14 py-10 max-w-2xl w-full">
+        <div className="absolute -top-10 -right-10 w-40 h-40 rounded-full bg-primary-foreground/5" />
+        <div className="absolute -bottom-6 -left-6 w-24 h-24 rounded-full bg-primary-foreground/5" />
 
           <div className="relative flex items-center justify-between gap-8">
             <div className="space-y-2">
