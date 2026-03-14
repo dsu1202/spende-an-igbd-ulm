@@ -13,34 +13,31 @@ const PaymentScreen = ({ amount, onSuccess }: Props) => {
   }, [onSuccess]);
 
   return (
-    <div className="flex flex-col items-center justify-center h-full px-16 animate-fade-in">
-      {/* Amount badge */}
-      <div className="mb-10 bg-primary/5 rounded-2xl px-10 py-4">
-        <span className="text-5xl font-bold font-heading text-primary">{amount} €</span>
+    <div className="flex flex-col items-center justify-center h-full px-12 animate-fade-in">
+      <div className="mb-8 bg-primary/5 rounded-2xl px-12 py-5">
+        <span className="text-6xl font-bold font-heading text-primary">{amount} €</span>
       </div>
 
-      {/* Contactless icon with animated rings */}
-      <div className="relative mb-12">
+      <div className="relative mb-10">
         <div className="absolute inset-0 rounded-full bg-primary/5 animate-ping" style={{ animationDuration: '2.5s' }} />
-        <div className="relative w-32 h-32 rounded-full bg-card flex items-center justify-center" style={{ boxShadow: 'var(--shadow-card)' }}>
-          <img src={contactlessIcon} alt="Kontaktlos" className="w-20 h-20 object-contain animate-pulse-gentle" />
+        <div className="relative w-36 h-36 rounded-full bg-card flex items-center justify-center" style={{ boxShadow: 'var(--shadow-card)' }}>
+          <img src={contactlessIcon} alt="Kontaktlos" className="w-24 h-24 object-contain animate-pulse-gentle" />
         </div>
       </div>
 
-      <p className="text-2xl font-semibold font-heading text-foreground text-center leading-relaxed max-w-lg mb-4">
+      <p className="text-3xl font-semibold font-heading text-foreground text-center leading-relaxed max-w-xl mb-3">
         Bitte Karte oder Smartphone an das Lesegerät halten
       </p>
 
-      <p className="text-lg text-muted-foreground">
+      <p className="text-xl text-muted-foreground">
         Warten auf Zahlung…
       </p>
 
-      {/* Animated dots */}
-      <div className="mt-8 flex gap-3">
+      <div className="mt-6 flex gap-3">
         {[0, 1, 2].map((i) => (
           <div
             key={i}
-            className="w-2.5 h-2.5 rounded-full bg-primary/40"
+            className="w-3 h-3 rounded-full bg-primary/40"
             style={{
               animation: `pulse-gentle 1.5s ease-in-out ${i * 0.4}s infinite`,
             }}
