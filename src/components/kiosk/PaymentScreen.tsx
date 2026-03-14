@@ -6,6 +6,7 @@ interface Props {
   amount: number;
   purpose: string;
   onSuccess: () => void;
+  onCancel: () => void;
 }
 
 const SUMUP_AFFILIATE_KEY = "sup_afk_PYhm1NegyIYiml8qmL3d17PUYhQQ2Dxu";
