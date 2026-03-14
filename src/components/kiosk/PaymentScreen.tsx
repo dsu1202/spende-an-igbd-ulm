@@ -8,7 +8,7 @@ interface Props {
   onSuccess: () => void;
 }
 
-const SUMUP_AFFILIATE_KEY = ""; // TODO: Add your SumUp Affiliate Key
+const SUMUP_AFFILIATE_KEY = "sup_afk_PYhm1NegyIYiml8qmL3d17PUYhQQ2Dxu";
 
 const PaymentScreen = ({ amount, purpose, onSuccess }: Props) => {
   const [paymentStarted, setPaymentStarted] = useState(false);
