@@ -11,7 +11,6 @@ interface Props {
 const SUMUP_AFFILIATE_KEY = "sup_afk_PYhm1NegyIYiml8qmL3d17PUYhQQ2Dxu";
 
 const PaymentScreen = ({ amount, purpose, onSuccess }: Props) => {
-  const [paymentStarted, setPaymentStarted] = useState(false);
   const [showRetry, setShowRetry] = useState(false);
 
   const buildSumUpDeepLink = useCallback(() => {
@@ -26,16 +25,17 @@ const PaymentScreen = ({ amount, purpose, onSuccess }: Props) => {
   }, [amount, purpose]);
 
   const startPayment = useCallback(() => {
-    setPaymentStarted(true);
     setShowRetry(false);
-
     const deepLink = buildSumUpDeepLink();
     window.location.href = deepLink;
-
-    // Show retry after 3s (if app didn't open)
     const retryTimer = setTimeout(() => setShowRetry(true), 3000);
     return () => clearTimeout(retryTimer);
   }, [buildSumUpDeepLink]);
+
+  // Auto-start payment on mount
+  useEffect(() => {
+    startPayment();
+  }, [startPayment]);
 
   // Listen for return from SumUp app
   useEffect(() => {
