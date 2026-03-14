@@ -54,7 +54,7 @@ const KioskApp = () => {
         />
       )}
       {screen === "payment" && (
-        <PaymentScreen amount={amount} purpose="" onSuccess={() => setScreen("thankyou")} />
+        <PaymentScreen amount={amount} purpose="" onSuccess={() => setScreen("thankyou")} onCancel={() => { setAmount(0); setScreen("amount"); }} />
       )}
       {screen === "thankyou" && (
         <ThankYouScreen onReset={() => { setAmount(0); setScreen("amount"); }} />
