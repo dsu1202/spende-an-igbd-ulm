@@ -16,19 +16,6 @@ const StartScreen = ({ onStart }: Props) => {
         <p className="text-xl text-muted-foreground leading-relaxed">
           Podrži dobra djela svojom sadakom.
         </p>
-
-        <div className="pt-4 space-y-3">
-          <p className="text-lg text-muted-foreground italic leading-relaxed">
-            „Was du an Gutem spendest, kommt dir selbst zugute."
-            <br />
-            <span className="text-base not-italic">(Qur'an 2:272)</span>
-          </p>
-          <p className="text-base text-muted-foreground italic leading-relaxed">
-            „Što god udijeliš od dobra, to je za tvoje dobro."
-            <br />
-            <span className="text-sm not-italic">(Kur'an 2:272)</span>
-          </p>
-        </div>
       </div>
 
       <button
