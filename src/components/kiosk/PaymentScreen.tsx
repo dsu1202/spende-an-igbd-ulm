@@ -23,11 +23,8 @@ const PaymentScreen = ({ amount, purpose, onSuccess }: Props) => {
   }, [amount, purpose]);
 
   const startPayment = useCallback(() => {
-    setShowRetry(false);
     const deepLink = buildSumUpDeepLink();
     window.location.href = deepLink;
-    const retryTimer = setTimeout(() => setShowRetry(true), 3000);
-    return () => clearTimeout(retryTimer);
   }, [buildSumUpDeepLink]);
 
   // Auto-start payment on mount
