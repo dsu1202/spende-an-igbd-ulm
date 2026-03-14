@@ -97,9 +97,7 @@ const PaymentScreen = ({ amount, purpose, onSuccess }: Props) => {
                 </Button>
               </div>
             </div>
-          )}
-        </div>
-      )}
+      </div>
     </div>
   );
 };
