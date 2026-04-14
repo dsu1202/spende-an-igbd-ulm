@@ -22,9 +22,14 @@ const AmountScreen = ({ onConfirm }: Props) => {
 
   return (
     <div className="flex flex-col items-center justify-center h-full px-12 animate-fade-in">
-      <h1 className="text-4xl font-extrabold font-heading text-foreground mb-14 tracking-tight">
-        Welchen Betrag möchtest du spenden?
-      </h1>
+      <div className="text-center mb-14">
+        <h1 className="text-4xl font-extrabold font-heading text-foreground tracking-tight">
+          Welchen Betrag möchtest du spenden?
+        </h1>
+        <p className="text-2xl text-muted-foreground mt-2">
+          Koji iznos želiš donirati?
+        </p>
+      </div>
 
       {!customMode ? (
         <>
@@ -45,7 +50,7 @@ const AmountScreen = ({ onConfirm }: Props) => {
             onClick={() => setCustomMode(true)}
             className="text-lg font-semibold text-primary bg-primary/10 px-8 py-3 rounded-full hover:bg-primary/15 transition-colors"
           >
-            Eigenen Betrag wählen
+            Eigenen Betrag · Vlastiti iznos
           </button>
         </>
       ) : (
@@ -56,7 +61,7 @@ const AmountScreen = ({ onConfirm }: Props) => {
             className="flex-shrink-0 h-20 px-8 rounded-full bg-primary/10 flex items-center justify-center gap-3 active:scale-95 transition-all hover:bg-primary/15"
           >
             <ArrowLeft className="w-7 h-7 text-primary" />
-            <span className="text-xl font-bold text-primary">Zurück</span>
+            <span className="text-xl font-bold text-primary">Nazad</span>
           </button>
 
           {/* Betrag in der Mitte */}
@@ -79,7 +84,7 @@ const AmountScreen = ({ onConfirm }: Props) => {
             disabled={Number(customValue) <= 0}
             className="flex-shrink-0 h-20 px-8 rounded-full bg-gradient-to-br from-primary to-primary/85 text-primary-foreground flex items-center justify-center gap-3 active:scale-95 transition-all shadow-lg disabled:opacity-30 disabled:scale-100"
           >
-            <span className="text-xl font-bold">Weiter</span>
+            <span className="text-xl font-bold">Dalje</span>
             <ArrowRight className="w-7 h-7" />
           </button>
         </div>
