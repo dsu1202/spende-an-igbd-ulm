@@ -1,5 +1,8 @@
+import { ArrowLeft } from "lucide-react";
+
 interface Props {
   onSelect: (purpose: string) => void;
+  onBack: () => void;
 }
 
 const purposes = [
@@ -8,9 +11,17 @@ const purposes = [
   { de: "Spende an hilfsbedürftige Kinder in Bosnien", bs: "Sadaka za djecu u potrebi u Bosni" },
 ];
 
-const PurposeScreen = ({ onSelect }: Props) => {
+const PurposeScreen = ({ onSelect, onBack }: Props) => {
   return (
-    <div className="flex flex-col items-center justify-center h-full px-12 animate-fade-in">
+    <div className="relative flex flex-col items-center justify-center h-full px-12 animate-fade-in">
+      <button
+        onClick={onBack}
+        className="absolute top-8 left-8 text-lg font-semibold text-primary bg-primary/10 px-6 py-3 rounded-full hover:bg-primary/15 transition-colors flex items-center gap-2"
+      >
+        <ArrowLeft className="w-5 h-5" />
+        Zurück · Nazad
+      </button>
+
       <div className="text-center mb-14">
         <h1 className="text-4xl font-extrabold font-heading text-foreground tracking-tight">
           Wofür möchtest du spenden?

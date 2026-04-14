@@ -48,7 +48,7 @@ const KioskApp = () => {
         <StartScreen onStart={() => setScreen("purpose")} />
       )}
       {screen === "purpose" && (
-        <PurposeScreen onSelect={(p) => { setPurpose(p); setScreen("amount"); }} />
+        <PurposeScreen onSelect={(p) => { setPurpose(p); setScreen("amount"); }} onBack={() => setScreen("start")} />
       )}
       {screen === "amount" && (
         <AmountScreen
@@ -60,7 +60,7 @@ const KioskApp = () => {
         />
       )}
       {screen === "payment" && (
-        <PaymentScreen amount={amount} purpose={purpose} onSuccess={() => setScreen("thankyou")} />
+        <PaymentScreen amount={amount} purpose={purpose} onSuccess={() => setScreen("thankyou")} onBack={() => setScreen("amount")} />
       )}
       {screen === "thankyou" && (
         <ThankYouScreen onReset={() => { setAmount(0); setPurpose(""); setScreen("purpose"); }} />
