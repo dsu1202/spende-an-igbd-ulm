@@ -22,59 +22,55 @@ const PaymentScreen = ({ amount, purpose, onSuccess }: Props) => {
         </span>
       </div>
 
-      {/* Tap-Animation: Handy an Kartenleser */}
-      <div className="relative w-72 h-48 flex items-end justify-center">
-        {/* Card Reader (SumUp Air) */}
-        <svg
-          viewBox="0 0 120 160"
-          className="w-28 h-auto"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          {/* Body */}
-          <rect x="10" y="0" width="100" height="160" rx="16" className="fill-muted stroke-border" strokeWidth="2" />
-          {/* Screen */}
-          <rect x="22" y="12" width="76" height="50" rx="8" className="fill-background stroke-border" strokeWidth="1.5" />
-          {/* NFC area */}
-          <circle cx="60" cy="100" r="18" className="stroke-primary" strokeWidth="2" strokeDasharray="6 4" fill="none" />
-          <circle cx="60" cy="100" r="10" className="stroke-primary/60" strokeWidth="1.5" strokeDasharray="4 3" fill="none" />
-          <circle cx="60" cy="100" r="4" className="fill-primary/40" />
-          {/* Buttons */}
-          <rect x="30" y="135" width="24" height="12" rx="4" className="fill-destructive/60" />
-          <rect x="66" y="135" width="24" height="12" rx="4" className="fill-primary/60" />
-        </svg>
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary to-primary/80 text-primary-foreground px-14 py-10 max-w-3xl w-full">
+        <div className="absolute -top-10 -right-10 w-40 h-40 rounded-full bg-primary-foreground/5" />
+        <div className="absolute -bottom-6 -left-6 w-24 h-24 rounded-full bg-primary-foreground/5" />
 
-        {/* Phone – animiert sich von oben heran */}
-        <svg
-          viewBox="0 0 70 130"
-          className="w-16 h-auto absolute right-6 animate-tap-phone"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <rect x="2" y="2" width="66" height="126" rx="12" className="fill-foreground/90 stroke-foreground" strokeWidth="2" />
-          <rect x="8" y="14" width="54" height="96" rx="4" className="fill-primary/20" />
-          {/* Camera notch */}
-          <circle cx="35" cy="8" r="3" className="fill-muted" />
-          {/* Home bar */}
-          <rect x="22" y="116" width="26" height="4" rx="2" className="fill-muted" />
-          {/* NFC waves on phone */}
-          <path d="M28 55 Q35 48 42 55" className="stroke-primary-foreground/60" strokeWidth="1.5" fill="none" strokeLinecap="round" />
-          <path d="M24 50 Q35 40 46 50" className="stroke-primary-foreground/40" strokeWidth="1.5" fill="none" strokeLinecap="round" />
-        </svg>
+        <div className="relative flex items-center justify-between gap-8">
+          {/* Text */}
+          <div className="space-y-3 flex-1">
+            <p className="text-3xl font-bold font-heading leading-snug">
+              Halte deine Karte an das Kartenlesegerät
+            </p>
+            <p className="text-xl opacity-80 leading-snug">
+              Prisloni svoju karticu na čitač kartica
+            </p>
+          </div>
 
-        {/* NFC Pulse */}
-        <div className="absolute bottom-12 left-1/2 -translate-x-3 animate-nfc-pulse">
-          <div className="w-6 h-6 rounded-full bg-primary/30" />
+          {/* Card reader animation + arrow */}
+          <div className="flex-shrink-0 flex flex-col items-center gap-3">
+            {/* Card reader with card tapping */}
+            <div className="relative w-28 h-28">
+              {/* Reader body */}
+              <svg viewBox="0 0 100 120" className="w-full h-full" fill="none" xmlns="http://www.w3.org/2000/svg">
+                {/* Reader body */}
+                <rect x="15" y="20" width="70" height="100" rx="12" className="fill-primary-foreground/20 stroke-primary-foreground/50" strokeWidth="1.5" />
+                {/* Screen */}
+                <rect x="25" y="28" width="50" height="30" rx="6" className="fill-primary-foreground/10 stroke-primary-foreground/30" strokeWidth="1" />
+                {/* NFC symbol on reader */}
+                <path d="M42 75 Q50 68 58 75" className="stroke-primary-foreground/60" strokeWidth="1.5" fill="none" strokeLinecap="round" />
+                <path d="M38 70 Q50 60 62 70" className="stroke-primary-foreground/40" strokeWidth="1.5" fill="none" strokeLinecap="round" />
+                <path d="M34 65 Q50 52 66 65" className="stroke-primary-foreground/25" strokeWidth="1.5" fill="none" strokeLinecap="round" />
+                <circle cx="50" cy="78" r="2.5" className="fill-primary-foreground/50" />
+              </svg>
+
+              {/* Card tapping in */}
+              <svg viewBox="0 0 60 40" className="absolute -top-2 left-1/2 -translate-x-1/2 w-16 animate-tap-phone" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="4" y="4" width="52" height="32" rx="5" className="fill-primary-foreground/80 stroke-primary-foreground" strokeWidth="1.5" />
+                {/* Chip */}
+                <rect x="12" y="14" width="10" height="8" rx="1.5" className="fill-primary/40 stroke-primary/60" strokeWidth="0.8" />
+                {/* Stripe */}
+                <rect x="30" y="12" width="18" height="3" rx="1" className="fill-primary-foreground/40" />
+                <rect x="30" y="18" width="12" height="3" rx="1" className="fill-primary-foreground/30" />
+              </svg>
+
+              {/* NFC pulse */}
+              <div className="absolute top-6 left-1/2 -translate-x-1/2 animate-nfc-pulse">
+                <div className="w-5 h-5 rounded-full bg-primary-foreground/40" />
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
-
-      <div className="text-center space-y-2 max-w-xl">
-        <p className="text-2xl font-bold font-heading text-foreground">
-          Halte deine Karte oder dein Handy an das Kartenlesegerät
-        </p>
-        <p className="text-xl text-muted-foreground">
-          Prisloni svoju karticu ili mobitel na čitač kartica
-        </p>
       </div>
     </div>
   );
