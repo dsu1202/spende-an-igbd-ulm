@@ -16,15 +16,6 @@ const PaymentScreen = ({ amount, purpose, onSuccess }: Props) => {
 
   return (
     <div className="flex flex-col items-center justify-center h-full px-12 animate-fade-in">
-      <div className="text-center mb-14">
-        <h1 className="text-4xl font-extrabold font-heading text-foreground tracking-tight">
-          Zahlung durchführen
-        </h1>
-        <p className="text-3xl text-muted-foreground mt-2">
-          Izvrši uplatu
-        </p>
-      </div>
-
       <div className="rounded-full bg-primary/10 backdrop-blur-sm px-14 py-5 border border-primary/20 mb-10">
         <span className="text-7xl font-extrabold font-heading text-primary tracking-tight">
           {amount} €
