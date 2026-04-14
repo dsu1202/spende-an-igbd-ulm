@@ -20,7 +20,7 @@ const PaymentScreen = ({ amount, purpose, onSuccess, onBack }: Props) => {
     <div className="relative flex flex-col items-center justify-center h-full px-12 animate-fade-in">
       <button
         onClick={onBack}
-        className="absolute top-12 left-16 text-lg font-semibold text-primary bg-primary/10 px-6 py-3 rounded-full hover:bg-primary/15 transition-colors flex items-center gap-2"
+        className="absolute top-20 left-24 text-lg font-semibold text-primary bg-primary/10 px-6 py-3 rounded-full hover:bg-primary/15 transition-colors flex items-center gap-2"
       >
         <ArrowLeft className="w-5 h-5" />
         Zurück · Nazad
