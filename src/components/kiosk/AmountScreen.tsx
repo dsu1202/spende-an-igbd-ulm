@@ -16,9 +16,15 @@ const AmountScreen = ({ onConfirm, onBack }: Props) => {
     onConfirm(amt);
   };
 
+  const handleCustomInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const raw = e.target.value.replace(/[^0-9]/g, "");
+    const num = Number(raw);
+    if (num <= 500) setCustomValue(raw);
+  };
+
   const handleCustomConfirm = () => {
     const val = Number(customValue);
-    if (val > 0) onConfirm(val);
+    if (val > 0 && val <= 500) onConfirm(val);
   };
 
   return (
@@ -65,12 +71,14 @@ const AmountScreen = ({ onConfirm, onBack }: Props) => {
         <div className="flex items-center justify-center gap-8 w-full max-w-2xl">
           <div className="flex-1 rounded-3xl bg-card border border-border p-8 flex items-center justify-center gap-3" style={{ boxShadow: 'var(--shadow-card)' }}>
             <input
-              type="number"
+              type="text"
               inputMode="numeric"
+              pattern="[0-9]*"
               autoFocus
               placeholder="0"
               value={customValue}
-              onChange={(e) => setCustomValue(e.target.value)}
+              onChange={handleCustomInput}
+              maxLength={3}
               className="w-48 text-6xl font-extrabold font-heading bg-transparent outline-none text-foreground placeholder:text-muted-foreground/30 text-center"
             />
             <span className="text-5xl font-bold text-muted-foreground">€</span>
