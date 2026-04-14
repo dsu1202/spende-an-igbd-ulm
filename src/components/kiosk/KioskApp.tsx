@@ -11,7 +11,7 @@ const INACTIVITY_TIMEOUT = 30000;
 
 const KioskApp = () => {
   const [screen, setScreen] = useState<Screen>("start");
-  const [purpose, setPurpose] = useState("");
+  const [purpose, setPurpose] = useState({ de: "", bs: "" });
   const [amount, setAmount] = useState(0);
   const inactivityTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -20,7 +20,7 @@ const KioskApp = () => {
     inactivityTimer.current = setTimeout(() => {
       setScreen("start");
       setAmount(0);
-      setPurpose("");
+      setPurpose({ de: "", bs: "" });
     }, INACTIVITY_TIMEOUT);
   }, []);
 
@@ -63,7 +63,7 @@ const KioskApp = () => {
         <PaymentScreen amount={amount} purpose={purpose} onSuccess={() => setScreen("thankyou")} onBack={() => setScreen("amount")} />
       )}
       {screen === "thankyou" && (
-        <ThankYouScreen onReset={() => { setAmount(0); setPurpose(""); setScreen("purpose"); }} />
+        <ThankYouScreen onReset={() => { setAmount(0); setPurpose({ de: "", bs: "" }); setScreen("purpose"); }} />
       )}
     </div>
   );
