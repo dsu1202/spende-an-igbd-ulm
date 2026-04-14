@@ -31,7 +31,7 @@ const PaymentScreen = ({ amount, purpose, onSuccess, onBack }: Props) => {
         </span>
       </div>
       <p className="text-2xl font-semibold text-foreground mb-1">für {purpose.de}</p>
-      <p className="text-xl text-muted-foreground mb-10">za {purpose.bs}</p>
+      <p className="text-2xl text-muted-foreground mb-10">za {purpose.bs}</p>
 
       <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary to-primary/80 text-primary-foreground px-14 py-10 max-w-3xl w-full">
         <div className="absolute -top-10 -right-10 w-40 h-40 rounded-full bg-primary-foreground/5" />
