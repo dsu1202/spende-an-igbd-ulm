@@ -13,7 +13,7 @@ const StartScreen = ({ onStart }: Props) => {
         <p className="text-3xl font-extrabold font-heading text-foreground leading-relaxed tracking-tight">
           Unterstütze mit deiner Spende gute Zwecke.
         </p>
-        <p className="text-xl text-muted-foreground leading-relaxed">
+        <p className="text-2xl text-muted-foreground leading-relaxed">
           Podrži dobra djela svojom sadakom.
         </p>
       </div>

@@ -26,7 +26,7 @@ const AmountScreen = ({ onConfirm }: Props) => {
         <h1 className="text-4xl font-extrabold font-heading text-foreground tracking-tight">
           Welchen Betrag möchtest du spenden?
         </h1>
-        <p className="text-2xl text-muted-foreground mt-2">
+        <p className="text-3xl text-muted-foreground mt-2">
           Koliko želiš dati sadake?
         </p>
       </div>
