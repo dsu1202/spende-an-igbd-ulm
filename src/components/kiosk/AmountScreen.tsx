@@ -27,7 +27,7 @@ const AmountScreen = ({ onConfirm }: Props) => {
           Welchen Betrag möchtest du spenden?
         </h1>
         <p className="text-2xl text-muted-foreground mt-2">
-          Koji iznos želiš donirati?
+          Koliko želiš dati sadake?
         </p>
       </div>
 
@@ -50,7 +50,7 @@ const AmountScreen = ({ onConfirm }: Props) => {
             onClick={() => setCustomMode(true)}
             className="text-lg font-semibold text-primary bg-primary/10 px-8 py-3 rounded-full hover:bg-primary/15 transition-colors"
           >
-            Eigenen Betrag · Vlastiti iznos
+            Eigenen Betrag wählen. Drugi iznos (unesi sam)
           </button>
         </>
       ) : (
