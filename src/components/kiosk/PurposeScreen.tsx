@@ -31,7 +31,7 @@ const PurposeScreen = ({ onSelect }: Props) => {
             <span className="relative text-2xl font-extrabold font-heading text-center leading-snug">
               {purpose.de}
             </span>
-            <span className="relative text-xl opacity-75 text-center leading-snug">
+            <span className="relative text-2xl opacity-75 text-center leading-snug">
               {purpose.bs}
             </span>
           </button>
