@@ -1,21 +1,30 @@
 import { useEffect } from "react";
+import { ArrowLeft } from "lucide-react";
 
 interface Props {
   amount: number;
   purpose: string;
   onSuccess: () => void;
+  onBack: () => void;
 }
 
 const AUTO_ADVANCE_DELAY = 5000;
 
-const PaymentScreen = ({ amount, purpose, onSuccess }: Props) => {
+const PaymentScreen = ({ amount, purpose, onSuccess, onBack }: Props) => {
   useEffect(() => {
     const timer = setTimeout(onSuccess, AUTO_ADVANCE_DELAY);
     return () => clearTimeout(timer);
   }, [onSuccess]);
 
   return (
-    <div className="flex flex-col items-center justify-center h-full px-12 animate-fade-in">
+    <div className="relative flex flex-col items-center justify-center h-full px-12 animate-fade-in">
+      <button
+        onClick={onBack}
+        className="absolute top-8 left-8 text-lg font-semibold text-primary bg-primary/10 px-6 py-3 rounded-full hover:bg-primary/15 transition-colors flex items-center gap-2"
+      >
+        <ArrowLeft className="w-5 h-5" />
+        Zurück · Nazad
+      </button>
       <div className="rounded-full bg-primary/10 backdrop-blur-sm px-14 py-5 border border-primary/20 mb-10">
         <span className="text-7xl font-extrabold font-heading text-primary tracking-tight">
           {amount} €
