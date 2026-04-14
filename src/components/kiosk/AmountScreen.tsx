@@ -61,7 +61,7 @@ const AmountScreen = ({ onConfirm }: Props) => {
             className="flex-shrink-0 h-20 px-8 rounded-full bg-primary/10 flex items-center justify-center gap-3 active:scale-95 transition-all hover:bg-primary/15"
           >
             <ArrowLeft className="w-7 h-7 text-primary" />
-            <span className="text-xl font-bold text-primary">Nazad</span>
+            <span className="text-xl font-bold text-primary">Zurück/Nazad</span>
           </button>
 
           {/* Betrag in der Mitte */}
@@ -84,7 +84,7 @@ const AmountScreen = ({ onConfirm }: Props) => {
             disabled={Number(customValue) <= 0}
             className="flex-shrink-0 h-20 px-8 rounded-full bg-gradient-to-br from-primary to-primary/85 text-primary-foreground flex items-center justify-center gap-3 active:scale-95 transition-all shadow-lg disabled:opacity-30 disabled:scale-100"
           >
-            <span className="text-xl font-bold">Dalje</span>
+            <span className="text-xl font-bold">Weiter/Dalje</span>
             <ArrowRight className="w-7 h-7" />
           </button>
         </div>
