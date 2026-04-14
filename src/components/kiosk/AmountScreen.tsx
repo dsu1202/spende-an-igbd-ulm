@@ -22,7 +22,14 @@ const AmountScreen = ({ onConfirm, onBack }: Props) => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center h-full px-12 animate-fade-in">
+    <div className="relative flex flex-col items-center justify-center h-full px-12 animate-fade-in">
+      <button
+        onClick={onBack}
+        className="absolute top-8 left-8 text-lg font-semibold text-primary bg-primary/10 px-6 py-3 rounded-full hover:bg-primary/15 transition-colors flex items-center gap-2"
+      >
+        <ArrowLeft className="w-5 h-5" />
+        Zurück · Nazad
+      </button>
       <div className="text-center mb-14">
         <h1 className="text-4xl font-extrabold font-heading text-foreground tracking-tight">
           Welchen Betrag möchtest du spenden?
@@ -47,21 +54,12 @@ const AmountScreen = ({ onConfirm, onBack }: Props) => {
             ))}
           </div>
 
-          <div className="flex items-center gap-6">
-            <button
-              onClick={onBack}
-              className="text-lg font-semibold text-primary bg-primary/10 px-8 py-3 rounded-full hover:bg-primary/15 transition-colors flex items-center gap-2"
-            >
-              <ArrowLeft className="w-5 h-5" />
-              Zurück · Nazad
-            </button>
-            <button
-              onClick={() => setCustomMode(true)}
-              className="text-lg font-semibold text-primary bg-primary/10 px-8 py-3 rounded-full hover:bg-primary/15 transition-colors"
-            >
-              Eigenen Betrag wählen · Izaberi drugu sumu
-            </button>
-          </div>
+          <button
+            onClick={() => setCustomMode(true)}
+            className="text-lg font-semibold text-primary bg-primary/10 px-8 py-3 rounded-full hover:bg-primary/15 transition-colors"
+          >
+            Eigenen Betrag wählen · Izaberi drugu sumu
+          </button>
         </>
       ) : (
         <div className="flex items-center justify-center gap-8 w-full max-w-2xl">
