@@ -54,21 +54,12 @@ const AmountScreen = ({ onConfirm, onBack }: Props) => {
             ))}
           </div>
 
-          <div className="flex items-center gap-6">
-            <button
-              onClick={onBack}
-              className="text-lg font-semibold text-primary bg-primary/10 px-8 py-3 rounded-full hover:bg-primary/15 transition-colors flex items-center gap-2"
-            >
-              <ArrowLeft className="w-5 h-5" />
-              Zurück · Nazad
-            </button>
-            <button
-              onClick={() => setCustomMode(true)}
-              className="text-lg font-semibold text-primary bg-primary/10 px-8 py-3 rounded-full hover:bg-primary/15 transition-colors"
-            >
-              Eigenen Betrag wählen · Izaberi drugu sumu
-            </button>
-          </div>
+          <button
+            onClick={() => setCustomMode(true)}
+            className="text-lg font-semibold text-primary bg-primary/10 px-8 py-3 rounded-full hover:bg-primary/15 transition-colors"
+          >
+            Eigenen Betrag wählen · Izaberi drugu sumu
+          </button>
         </>
       ) : (
         <div className="flex items-center justify-center gap-8 w-full max-w-2xl">
