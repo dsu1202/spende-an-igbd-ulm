@@ -32,7 +32,7 @@ const PaymentScreen = ({ amount, purpose, onSuccess }: Props) => {
             <p className="text-3xl font-bold font-heading leading-snug">
               Halte deine Karte an das Kartenlesegerät
             </p>
-            <p className="text-xl opacity-80 leading-snug">
+            <p className="text-2xl opacity-80 leading-snug">
               Prisloni svoju karticu na čitač kartica
             </p>
           </div>
