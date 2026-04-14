@@ -9,11 +9,11 @@ const StartScreen = ({ onStart }: Props) => {
     <div className="flex flex-col items-center justify-center h-full px-12 animate-fade-in">
       <img src={mosqueLogo} alt="Moschee Logo" className="w-36 h-36 mb-8 object-contain" />
 
-      <div className="text-center mb-14">
-        <h1 className="text-4xl font-extrabold font-heading text-foreground tracking-tight">
+      <div className="text-center max-w-2xl space-y-4 mb-14">
+        <p className="text-3xl font-extrabold font-heading text-foreground leading-relaxed tracking-tight">
           Unterstütze mit deiner Spende gute Zwecke.
-        </h1>
-        <p className="text-3xl text-muted-foreground mt-2">
+        </p>
+        <p className="text-2xl text-muted-foreground leading-relaxed">
           Podrži dobra djela svojom sadakom.
         </p>
       </div>

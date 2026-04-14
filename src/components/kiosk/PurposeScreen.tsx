@@ -11,8 +11,8 @@ const purposes = [
 const PurposeScreen = ({ onSelect }: Props) => {
   return (
     <div className="flex flex-col items-center justify-center h-full px-12 animate-fade-in">
-      <div className="text-center mb-14">
-        <h1 className="text-4xl font-extrabold font-heading text-foreground tracking-tight">
+      <div className="text-center mb-16">
+        <h1 className="text-4xl font-bold font-heading text-foreground">
           Wofür möchtest du spenden?
         </h1>
         <p className="text-3xl text-muted-foreground mt-2">
