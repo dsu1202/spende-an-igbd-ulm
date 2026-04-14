@@ -24,18 +24,18 @@ const ThankYouScreen = ({ onReset }: Props) => {
         </p>
       </div>
 
-      <div className="text-center space-y-4 mt-2 max-w-xl">
+      <div className="text-center space-y-4 mt-2 max-w-2xl">
         <div className="space-y-1">
-          <p className="text-lg text-muted-foreground italic">
+          <p className="text-2xl text-muted-foreground italic">
             „Was ihr an Gutem spendet, kommt euch selbst zugute."
           </p>
-          <p className="text-base text-muted-foreground font-medium">(2:272)</p>
+          <p className="text-lg text-muted-foreground font-medium">(2:272)</p>
         </div>
         <div className="space-y-1">
-          <p className="text-lg text-muted-foreground italic">
+          <p className="text-2xl text-muted-foreground italic">
             „Što god udijelite od dobra, to je za vaše dobro."
           </p>
-          <p className="text-base text-muted-foreground font-medium">(2:272)</p>
+          <p className="text-lg text-muted-foreground font-medium">(2:272)</p>
         </div>
       </div>
     </div>
