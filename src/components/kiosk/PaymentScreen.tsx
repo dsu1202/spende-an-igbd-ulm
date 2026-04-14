@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { MoveRight } from "lucide-react";
 
 interface Props {
@@ -6,17 +7,22 @@ interface Props {
   onSuccess: () => void;
 }
 
+const AUTO_ADVANCE_DELAY = 5000;
+
 const PaymentScreen = ({ amount, purpose, onSuccess }: Props) => {
+  useEffect(() => {
+    const timer = setTimeout(onSuccess, AUTO_ADVANCE_DELAY);
+    return () => clearTimeout(timer);
+  }, [onSuccess]);
+
   return (
     <div className="flex flex-col items-center justify-center h-full px-12 animate-fade-in gap-10">
-      {/* Amount */}
       <div className="rounded-full bg-primary/10 backdrop-blur-sm px-14 py-5 border border-primary/20">
         <span className="text-7xl font-extrabold font-heading text-primary tracking-tight">
           {amount} €
         </span>
       </div>
 
-      {/* Instruction card */}
       <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary to-primary/80 text-primary-foreground px-14 py-10 max-w-2xl w-full">
         <div className="absolute -top-10 -right-10 w-40 h-40 rounded-full bg-primary-foreground/5" />
         <div className="absolute -bottom-6 -left-6 w-24 h-24 rounded-full bg-primary-foreground/5" />
@@ -32,14 +38,6 @@ const PaymentScreen = ({ amount, purpose, onSuccess }: Props) => {
           </div>
         </div>
       </div>
-
-      {/* Manual confirm button for now */}
-      <button
-        onClick={onSuccess}
-        className="text-lg font-semibold text-primary bg-primary/10 px-8 py-3 rounded-full hover:bg-primary/15 transition-colors"
-      >
-        Zahlung bestätigen
-      </button>
     </div>
   );
 };
