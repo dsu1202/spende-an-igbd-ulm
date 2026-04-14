@@ -3,11 +3,12 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
 
 interface Props {
   onConfirm: (amount: number) => void;
+  onBack: () => void;
 }
 
 const amounts = [5, 10, 20, 50];
 
-const AmountScreen = ({ onConfirm }: Props) => {
+const AmountScreen = ({ onConfirm, onBack }: Props) => {
   const [customMode, setCustomMode] = useState(false);
   const [customValue, setCustomValue] = useState("");
 
@@ -46,16 +47,24 @@ const AmountScreen = ({ onConfirm }: Props) => {
             ))}
           </div>
 
-          <button
-            onClick={() => setCustomMode(true)}
-            className="text-lg font-semibold text-primary bg-primary/10 px-8 py-3 rounded-full hover:bg-primary/15 transition-colors"
-          >
-            Eigenen Betrag wählen · Izaberi drugu sumu
-          </button>
+          <div className="flex items-center gap-6">
+            <button
+              onClick={onBack}
+              className="text-lg font-semibold text-primary bg-primary/10 px-8 py-3 rounded-full hover:bg-primary/15 transition-colors flex items-center gap-2"
+            >
+              <ArrowLeft className="w-5 h-5" />
+              Zurück · Nazad
+            </button>
+            <button
+              onClick={() => setCustomMode(true)}
+              className="text-lg font-semibold text-primary bg-primary/10 px-8 py-3 rounded-full hover:bg-primary/15 transition-colors"
+            >
+              Eigenen Betrag wählen · Izaberi drugu sumu
+            </button>
+          </div>
         </>
       ) : (
         <div className="flex items-center justify-center gap-8 w-full max-w-2xl">
-          {/* Zurück */}
           <button
             onClick={() => { setCustomMode(false); setCustomValue(""); }}
             className="flex-shrink-0 h-20 px-8 rounded-full bg-primary/10 flex items-center justify-center gap-3 active:scale-95 transition-all hover:bg-primary/15"
@@ -64,7 +73,6 @@ const AmountScreen = ({ onConfirm }: Props) => {
             <span className="text-xl font-bold text-primary">Zurück / Nazad</span>
           </button>
 
-          {/* Betrag in der Mitte */}
           <div className="flex-1 rounded-3xl bg-card border border-border p-8 flex items-center justify-center gap-3" style={{ boxShadow: 'var(--shadow-card)' }}>
             <input
               type="number"
@@ -78,7 +86,6 @@ const AmountScreen = ({ onConfirm }: Props) => {
             <span className="text-5xl font-bold text-muted-foreground">€</span>
           </div>
 
-          {/* Weiter */}
           <button
             onClick={handleCustomConfirm}
             disabled={Number(customValue) <= 0}

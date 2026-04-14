@@ -1,15 +1,17 @@
 import { useState, useCallback, useEffect, useRef } from "react";
 import StartScreen from "./StartScreen";
+import PurposeScreen from "./PurposeScreen";
 import AmountScreen from "./AmountScreen";
 import PaymentScreen from "./PaymentScreen";
 import ThankYouScreen from "./ThankYouScreen";
 
-type Screen = "start" | "amount" | "payment" | "thankyou";
+type Screen = "start" | "purpose" | "amount" | "payment" | "thankyou";
 
 const INACTIVITY_TIMEOUT = 30000;
 
 const KioskApp = () => {
   const [screen, setScreen] = useState<Screen>("start");
+  const [purpose, setPurpose] = useState("");
   const [amount, setAmount] = useState(0);
   const inactivityTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -18,12 +20,12 @@ const KioskApp = () => {
     inactivityTimer.current = setTimeout(() => {
       setScreen("start");
       setAmount(0);
+      setPurpose("");
     }, INACTIVITY_TIMEOUT);
   }, []);
 
-  // Start/reset inactivity timer on amount screen
   useEffect(() => {
-    if (screen === "amount") {
+    if (screen === "purpose" || screen === "amount") {
       resetInactivityTimer();
 
       const onInteraction = () => resetInactivityTimer();
@@ -43,7 +45,10 @@ const KioskApp = () => {
   return (
     <div className="h-full w-full overflow-hidden">
       {screen === "start" && (
-        <StartScreen onStart={() => setScreen("amount")} />
+        <StartScreen onStart={() => setScreen("purpose")} />
+      )}
+      {screen === "purpose" && (
+        <PurposeScreen onSelect={(p) => { setPurpose(p); setScreen("amount"); }} />
       )}
       {screen === "amount" && (
         <AmountScreen
@@ -51,13 +56,14 @@ const KioskApp = () => {
             setAmount(a);
             setScreen("payment");
           }}
+          onBack={() => setScreen("purpose")}
         />
       )}
       {screen === "payment" && (
-        <PaymentScreen amount={amount} purpose="" onSuccess={() => setScreen("thankyou")} />
+        <PaymentScreen amount={amount} purpose={purpose} onSuccess={() => setScreen("thankyou")} />
       )}
       {screen === "thankyou" && (
-        <ThankYouScreen onReset={() => { setAmount(0); setScreen("amount"); }} />
+        <ThankYouScreen onReset={() => { setAmount(0); setPurpose(""); setScreen("purpose"); }} />
       )}
     </div>
   );
