@@ -28,9 +28,12 @@ const PaymentScreen = ({ amount, purpose, onSuccess }: Props) => {
         <div className="absolute -bottom-6 -left-6 w-24 h-24 rounded-full bg-primary-foreground/5" />
 
         <div className="relative flex items-center justify-between gap-8">
-          <div className="space-y-2">
+          <div className="space-y-3">
             <p className="text-3xl font-bold font-heading leading-snug">
               Halte deine Karte an das Kartenlesegerät zum Spenden
+            </p>
+            <p className="text-xl opacity-80 leading-snug">
+              Prisloni svoju karticu na čitač kartica za donaciju
             </p>
           </div>
           <div className="flex-shrink-0 w-20 h-20 rounded-2xl bg-primary-foreground/15 backdrop-blur-sm flex items-center justify-center">
