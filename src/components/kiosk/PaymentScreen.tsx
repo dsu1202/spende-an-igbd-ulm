@@ -25,11 +25,12 @@ const PaymentScreen = ({ amount, purpose, onSuccess, onBack }: Props) => {
         <ArrowLeft className="w-5 h-5" />
         Zurück · Nazad
       </button>
-      <div className="rounded-full bg-primary/10 backdrop-blur-sm px-14 py-5 border border-primary/20 mb-10">
+      <div className="rounded-full bg-primary/10 backdrop-blur-sm px-14 py-5 border border-primary/20 mb-4">
         <span className="text-7xl font-extrabold font-heading text-primary tracking-tight">
           {amount} €
         </span>
       </div>
+      <p className="text-2xl text-muted-foreground mb-10">{purpose}</p>
 
       <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary to-primary/80 text-primary-foreground px-14 py-10 max-w-3xl w-full">
         <div className="absolute -top-10 -right-10 w-40 h-40 rounded-full bg-primary-foreground/5" />
