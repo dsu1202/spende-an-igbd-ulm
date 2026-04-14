@@ -63,14 +63,6 @@ const AmountScreen = ({ onConfirm, onBack }: Props) => {
         </>
       ) : (
         <div className="flex items-center justify-center gap-8 w-full max-w-2xl">
-          <button
-            onClick={() => { setCustomMode(false); setCustomValue(""); }}
-            className="flex-shrink-0 h-20 px-8 rounded-full bg-primary/10 flex items-center justify-center gap-3 active:scale-95 transition-all hover:bg-primary/15"
-          >
-            <ArrowLeft className="w-7 h-7 text-primary" />
-            <span className="text-xl font-bold text-primary">Zurück / Nazad</span>
-          </button>
-
           <div className="flex-1 rounded-3xl bg-card border border-border p-8 flex items-center justify-center gap-3" style={{ boxShadow: 'var(--shadow-card)' }}>
             <input
               type="number"
