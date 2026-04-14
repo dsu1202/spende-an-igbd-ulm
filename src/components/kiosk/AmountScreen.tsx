@@ -48,7 +48,7 @@ const AmountScreen = ({ onConfirm }: Props) => {
 
           <button
             onClick={() => setCustomMode(true)}
-            className="text-lg font-semibold text-primary bg-primary/10 px-8 py-3 rounded-full hover:bg-primary/15 transition-colors"
+            className="text-xl font-semibold text-primary bg-primary/10 px-10 py-4 rounded-full hover:bg-primary/15 transition-colors"
           >
             Eigenen Betrag wählen · Izaberi drugu sumu
           </button>
