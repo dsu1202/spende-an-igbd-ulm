@@ -23,7 +23,7 @@ const StartScreen = ({ onStart }: Props) => {
         className="relative overflow-hidden bg-gradient-to-r from-primary to-primary/85 text-primary-foreground font-heading font-extrabold text-2xl px-16 py-6 rounded-full active:scale-95 transition-all duration-200 shadow-lg hover:shadow-xl"
       >
         <div className="absolute -top-4 -right-4 w-16 h-16 rounded-full bg-primary-foreground/10" />
-        <span className="relative">Spenden starten · Započni donaciju</span>
+        <span className="relative">Spenden starten · Započni sadaku</span>
       </button>
     </div>
   );
