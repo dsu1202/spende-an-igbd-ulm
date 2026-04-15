@@ -452,10 +452,10 @@ const Admin = () => {
 
         {/* Change indicator + publish bar */}
         {hasChanges && (
-          <div className="mb-6 rounded-xl border-2 border-primary/30 bg-primary/5 p-4 flex items-center justify-between animate-fade-in">
+          <div className="mb-6 rounded-xl border-2 border-primary/30 bg-primary/5 p-3 md:p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 animate-fade-in">
             <div className="flex items-center gap-3">
-              <div className="w-3 h-3 rounded-full bg-amber-500 animate-pulse" />
-              <span className="font-medium text-foreground">Entwurf – Änderungen sind noch nicht live</span>
+              <div className="w-3 h-3 rounded-full bg-amber-500 animate-pulse flex-shrink-0" />
+              <span className="font-medium text-foreground text-sm md:text-base">Entwurf – noch nicht live</span>
             </div>
             <div className="flex items-center gap-2">
               <Button variant="outline" size="sm" onClick={resetDraft} className="gap-2">
@@ -464,7 +464,7 @@ const Admin = () => {
               </Button>
               <Button size="sm" onClick={publishDraft} disabled={publishing} className="gap-2">
                 <Rocket className="w-3 h-3" />
-                {publishing ? "Wird veröffentlicht..." : "Live schalten"}
+                {publishing ? "Veröffentlichen..." : "Live schalten"}
               </Button>
             </div>
           </div>
