@@ -98,7 +98,7 @@ const KioskPreview = ({ slots }: { slots: (DonationPurpose | null)[] }) => {
         {slots.filter(Boolean).map((p, i) => (
           <div
             key={i}
-            className="flex-1 max-w-[140px] rounded-xl flex flex-col items-center justify-center p-3 min-h-[80px] text-center bg-primary text-primary-foreground"
+            className="w-[80px] h-[80px] rounded-xl flex flex-col items-center justify-center p-2 text-center bg-primary text-primary-foreground"
           >
             <span className="text-[10px] font-bold leading-tight">{p!.title_de}</span>
             <span className="text-[9px] opacity-75 leading-tight mt-0.5">{p!.title_bs}</span>
