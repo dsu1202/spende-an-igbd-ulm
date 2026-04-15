@@ -141,6 +141,7 @@ const Admin = () => {
   }, [session, fetchPurposes, fetchHistory]);
 
   const handleLogout = async () => {
+    if (!confirm("Möchtest du dich wirklich abmelden?")) return;
     await supabase.auth.signOut();
   };
 
@@ -318,7 +319,12 @@ const Admin = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background p-6 md:p-10">
+    <div className="min-h-screen bg-background p-6 md:p-10 relative">
+      {/* Abmelden oben rechts fixiert */}
+      <Button variant="ghost" size="icon" onClick={handleLogout} title="Abmelden" className="absolute top-4 right-4">
+        <LogOut className="w-5 h-5" />
+      </Button>
+
       <div className="max-w-5xl mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
@@ -334,9 +340,6 @@ const Admin = () => {
             <Button onClick={openCreate} className="gap-2">
               <Plus className="w-4 h-4" />
               Neue Aktion
-            </Button>
-            <Button variant="ghost" size="icon" onClick={handleLogout} title="Abmelden">
-              <LogOut className="w-4 h-4" />
             </Button>
           </div>
         </div>
