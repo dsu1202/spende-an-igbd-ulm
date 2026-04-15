@@ -426,26 +426,26 @@ const Admin = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background p-6 md:p-10 relative">
-      <Button variant="ghost" size="icon" onClick={handleLogout} title="Abmelden" className="absolute top-4 right-4">
+    <div className="min-h-screen bg-background p-4 md:p-6 lg:p-10 relative">
+      <Button variant="ghost" size="icon" onClick={handleLogout} title="Abmelden" className="absolute top-4 right-4 z-10">
         <LogOut className="w-5 h-5" />
       </Button>
 
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-6xl mx-auto pr-10 md:pr-0">
         {/* Header */}
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
           <div>
-            <h1 className="text-2xl font-bold text-foreground">Spendenaktionen verwalten</h1>
-            <p className="text-muted-foreground mt-1">Ziehe Aktionen auf die 3 Positionen, prüfe die Vorschau und schalte live</p>
+            <h1 className="text-xl md:text-2xl font-bold text-foreground">Spendenaktionen verwalten</h1>
+            <p className="text-muted-foreground mt-1 text-sm md:text-base">Ziehe Aktionen auf die 3 Positionen, prüfe die Vorschau und schalte live</p>
           </div>
-          <div className="flex items-center gap-3">
-            <Button variant="outline" onClick={() => setShowHistory(!showHistory)} className="gap-2">
+          <div className="flex items-center gap-2">
+            <Button variant="outline" size="sm" onClick={() => setShowHistory(!showHistory)} className="gap-2">
               <History className="w-4 h-4" />
-              Verlauf
+              <span className="hidden sm:inline">Verlauf</span>
             </Button>
-            <Button onClick={openCreate} className="gap-2">
+            <Button size="sm" onClick={openCreate} className="gap-2">
               <Plus className="w-4 h-4" />
-              Neue Aktion
+              <span className="hidden sm:inline">Neue Aktion</span>
             </Button>
           </div>
         </div>
