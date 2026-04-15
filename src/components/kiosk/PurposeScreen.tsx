@@ -1,14 +1,46 @@
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+
 interface Props {
   onSelect: (purpose: { de: string; bs: string }) => void;
 }
 
-const purposes = [
+const fallbackPurposes = [
   { de: "Projekt Vakuf", bs: "Projekat Vakuf" },
   { de: "Spende an die Moschee", bs: "Sadaka za džamiju" },
   { de: "Spende an hilfsbedürftige Kinder in Bosnien", bs: "Sadaka za djecu u potrebi u Bosni" },
 ];
 
 const PurposeScreen = ({ onSelect }: Props) => {
+  const [purposes, setPurposes] = useState<{ de: string; bs: string }[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetch = async () => {
+      const { data, error } = await supabase
+        .from("donation_purposes")
+        .select("title_de, title_bs")
+        .eq("is_active", true)
+        .order("sort_order", { ascending: true });
+
+      if (error || !data || data.length === 0) {
+        setPurposes(fallbackPurposes);
+      } else {
+        setPurposes(data.map((d) => ({ de: d.title_de, bs: d.title_bs })));
+      }
+      setLoading(false);
+    };
+    fetch();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-full">
+        <div className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col items-center justify-center h-full px-12 animate-fade-in">
       <div className="text-center mb-14">
@@ -20,7 +52,7 @@ const PurposeScreen = ({ onSelect }: Props) => {
         </p>
       </div>
 
-      <div className="w-full max-w-4xl grid grid-cols-3 gap-8">
+      <div className={`w-full max-w-4xl grid gap-8 ${purposes.length <= 3 ? "grid-cols-3" : "grid-cols-2 md:grid-cols-3"}`}>
         {purposes.map((purpose) => (
           <button
             key={purpose.de}
