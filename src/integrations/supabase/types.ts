@@ -44,6 +44,44 @@ export type Database = {
         }
         Relationships: []
       }
+      purpose_history: {
+        Row: {
+          action: string
+          created_at: string
+          id: string
+          position: number
+          purpose_id: string | null
+          purpose_title_bs: string
+          purpose_title_de: string
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          id?: string
+          position: number
+          purpose_id?: string | null
+          purpose_title_bs: string
+          purpose_title_de: string
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          id?: string
+          position?: number
+          purpose_id?: string | null
+          purpose_title_bs?: string
+          purpose_title_de?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "purpose_history_purpose_id_fkey"
+            columns: ["purpose_id"]
+            isOneToOne: false
+            referencedRelation: "donation_purposes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
