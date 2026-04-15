@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,7 +18,7 @@ import {
   TableHead,
   TableCell,
 } from "@/components/ui/table";
-import { Plus, Pencil, Trash2, LogOut, GripVertical, X, History } from "lucide-react";
+import { Plus, Pencil, Trash2, LogOut, GripVertical, X, History, Rocket, RotateCcw, Eye } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import type { Session } from "@supabase/supabase-js";
 
@@ -40,6 +40,9 @@ interface HistoryEntry {
   action: string;
   created_at: string;
 }
+
+// Draft slot assignment: which purpose ID goes in which slot
+type DraftSlots = [string | null, string | null, string | null];
 
 const POSITION_LABELS = ["Links", "Mitte", "Rechts"];
 
@@ -82,6 +85,43 @@ const AdminLogin = ({ onLogin }: { onLogin: () => void }) => {
   );
 };
 
+// Mini kiosk preview component
+const KioskPreview = ({ slots }: { slots: (DonationPurpose | null)[] }) => {
+  const filled = slots.filter(Boolean) as DonationPurpose[];
+  return (
+    <div className="rounded-2xl border-2 border-muted bg-foreground/5 p-6 aspect-video flex flex-col items-center justify-center gap-4">
+      <div className="text-center">
+        <p className="text-sm font-bold text-foreground">Wofür möchtest du spenden?</p>
+        <p className="text-xs text-muted-foreground">Za šta želiš dati sadaku?</p>
+      </div>
+      <div className="flex gap-3 w-full max-w-md">
+        {[0, 1, 2].map((i) => {
+          const p = slots[i];
+          return (
+            <div
+              key={i}
+              className={`flex-1 rounded-xl flex flex-col items-center justify-center p-3 min-h-[80px] text-center ${
+                p
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-muted/50 border border-dashed border-muted-foreground/20"
+              }`}
+            >
+              {p ? (
+                <>
+                  <span className="text-[10px] font-bold leading-tight">{p.title_de}</span>
+                  <span className="text-[9px] opacity-75 leading-tight mt-0.5">{p.title_bs}</span>
+                </>
+              ) : (
+                <span className="text-[9px] text-muted-foreground">Leer</span>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
+
 const Admin = () => {
   const [session, setSession] = useState<Session | null>(null);
   const [authLoading, setAuthLoading] = useState(true);
@@ -94,6 +134,10 @@ const Admin = () => {
   const [titleBs, setTitleBs] = useState("");
   const [showHistory, setShowHistory] = useState(false);
   const [dragItem, setDragItem] = useState<DonationPurpose | null>(null);
+  const [publishing, setPublishing] = useState(false);
+
+  // Draft state: local slot assignments (purpose IDs)
+  const [draftSlots, setDraftSlots] = useState<DraftSlots>([null, null, null]);
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
@@ -116,6 +160,14 @@ const Admin = () => {
       toast({ title: "Fehler", description: error.message, variant: "destructive" });
     } else {
       setPurposes(data || []);
+      // Initialize draft from live state
+      const newDraft: DraftSlots = [null, null, null];
+      (data || []).forEach((p) => {
+        if (p.is_active && p.sort_order >= 0 && p.sort_order <= 2) {
+          newDraft[p.sort_order] = p.id;
+        }
+      });
+      setDraftSlots(newDraft);
     }
     setLoading(false);
   }, []);
@@ -145,15 +197,35 @@ const Admin = () => {
     await supabase.auth.signOut();
   };
 
-  const activePurposes = purposes.filter((p) => p.is_active).sort((a, b) => a.sort_order - b.sort_order);
-  const inactivePurposes = purposes.filter((p) => !p.is_active);
+  const purposeMap = useMemo(() => {
+    const map: Record<string, DonationPurpose> = {};
+    purposes.forEach((p) => { map[p.id] = p; });
+    return map;
+  }, [purposes]);
 
-  // Slots: positions 0, 1, 2
-  const slots: (DonationPurpose | null)[] = [null, null, null];
-  activePurposes.forEach((p) => {
-    const idx = p.sort_order;
-    if (idx >= 0 && idx <= 2) slots[idx] = p;
-  });
+  // Live slots (from DB)
+  const liveSlots: (DonationPurpose | null)[] = useMemo(() => {
+    const s: (DonationPurpose | null)[] = [null, null, null];
+    purposes.forEach((p) => {
+      if (p.is_active && p.sort_order >= 0 && p.sort_order <= 2) s[p.sort_order] = p;
+    });
+    return s;
+  }, [purposes]);
+
+  // Draft slots resolved to purposes
+  const draftSlotsPurposes: (DonationPurpose | null)[] = draftSlots.map((id) => (id ? purposeMap[id] || null : null));
+
+  // IDs in draft slots
+  const draftSlotIds = new Set(draftSlots.filter(Boolean));
+
+  // Inactive = all purposes NOT in draft slots
+  const inactivePurposes = purposes.filter((p) => !draftSlotIds.has(p.id));
+
+  // Has draft changed from live?
+  const hasChanges = useMemo(() => {
+    const liveIds = liveSlots.map((s) => s?.id || null);
+    return draftSlots[0] !== liveIds[0] || draftSlots[1] !== liveIds[1] || draftSlots[2] !== liveIds[2];
+  }, [draftSlots, liveSlots]);
 
   const openCreate = () => {
     setEditing(null);
@@ -186,7 +258,6 @@ const Admin = () => {
       }
       toast({ title: "Aktualisiert" });
     } else {
-      // New purpose starts inactive
       const { error } = await supabase
         .from("donation_purposes")
         .insert({ title_de: titleDe.trim(), title_bs: titleBs.trim(), is_active: false, sort_order: 99 });
@@ -203,9 +274,8 @@ const Admin = () => {
 
   const handleDelete = async (p: DonationPurpose) => {
     if (!confirm(`"${p.title_de}" wirklich löschen?`)) return;
-    if (p.is_active) {
-      await logHistory(p, p.sort_order + 1, "deactivated");
-    }
+    // Remove from draft if present
+    setDraftSlots((prev) => prev.map((id) => (id === p.id ? null : id)) as DraftSlots);
     const { error } = await supabase.from("donation_purposes").delete().eq("id", p.id);
     if (error) {
       toast({ title: "Fehler", description: error.message, variant: "destructive" });
@@ -226,33 +296,82 @@ const Admin = () => {
     });
   };
 
-  const assignToSlot = async (purpose: DonationPurpose, slotIndex: number) => {
-    // If slot is occupied, deactivate the current occupant
-    const current = slots[slotIndex];
-    if (current && current.id !== purpose.id) {
-      await supabase.from("donation_purposes").update({ is_active: false, sort_order: 99 }).eq("id", current.id);
-      await logHistory(current, slotIndex + 1, "deactivated");
-    }
-
-    // If purpose was already active at another slot, log the move
-    if (purpose.is_active && purpose.sort_order !== slotIndex) {
-      await logHistory(purpose, slotIndex + 1, "moved");
-    } else if (!purpose.is_active) {
-      await logHistory(purpose, slotIndex + 1, "activated");
-    }
-
-    // Activate and assign to slot
-    await supabase.from("donation_purposes").update({ is_active: true, sort_order: slotIndex }).eq("id", purpose.id);
-
-    fetchPurposes();
-    fetchHistory();
+  // Draft operations (local state only, no DB writes)
+  const draftAssignToSlot = (purposeId: string, slotIndex: number) => {
+    setDraftSlots((prev) => {
+      const next = [...prev] as DraftSlots;
+      // Remove purpose from any existing slot
+      for (let i = 0; i < 3; i++) {
+        if (next[i] === purposeId) next[i] = null;
+      }
+      // If slot was occupied by someone else, free them
+      // (they go back to inactive pool)
+      next[slotIndex] = purposeId;
+      return next;
+    });
   };
 
-  const removeFromSlot = async (purpose: DonationPurpose, slotIndex: number) => {
-    await supabase.from("donation_purposes").update({ is_active: false, sort_order: 99 }).eq("id", purpose.id);
-    await logHistory(purpose, slotIndex + 1, "deactivated");
-    fetchPurposes();
-    fetchHistory();
+  const draftRemoveFromSlot = (slotIndex: number) => {
+    setDraftSlots((prev) => {
+      const next = [...prev] as DraftSlots;
+      next[slotIndex] = null;
+      return next;
+    });
+  };
+
+  const resetDraft = () => {
+    const newDraft: DraftSlots = [null, null, null];
+    purposes.forEach((p) => {
+      if (p.is_active && p.sort_order >= 0 && p.sort_order <= 2) {
+        newDraft[p.sort_order] = p.id;
+      }
+    });
+    setDraftSlots(newDraft);
+  };
+
+  // Publish draft to DB
+  const publishDraft = async () => {
+    if (!confirm("Soll der Entwurf jetzt live geschaltet werden?")) return;
+    setPublishing(true);
+
+    try {
+      // Deactivate all current active purposes
+      for (const p of purposes.filter((p) => p.is_active)) {
+        const stillInSlot = draftSlots.indexOf(p.id);
+        if (stillInSlot === -1) {
+          // Was active, now removed
+          await supabase.from("donation_purposes").update({ is_active: false, sort_order: 99 }).eq("id", p.id);
+          await logHistory(p, p.sort_order + 1, "deactivated");
+        }
+      }
+
+      // Activate draft slots
+      for (let i = 0; i < 3; i++) {
+        const purposeId = draftSlots[i];
+        if (purposeId) {
+          const p = purposeMap[purposeId];
+          if (!p) continue;
+          const wasActive = p.is_active;
+          const wasSameSlot = wasActive && p.sort_order === i;
+
+          await supabase.from("donation_purposes").update({ is_active: true, sort_order: i }).eq("id", purposeId);
+
+          if (!wasActive) {
+            await logHistory(p, i + 1, "activated");
+          } else if (!wasSameSlot) {
+            await logHistory(p, i + 1, "moved");
+          }
+        }
+      }
+
+      toast({ title: "Live geschaltet!", description: "Die Änderungen sind jetzt im Kiosk sichtbar." });
+      fetchPurposes();
+      fetchHistory();
+    } catch (e) {
+      toast({ title: "Fehler beim Veröffentlichen", variant: "destructive" });
+    }
+
+    setPublishing(false);
   };
 
   const handleDragStart = (p: DonationPurpose) => {
@@ -266,14 +385,15 @@ const Admin = () => {
 
   const handleDropOnSlot = (slotIndex: number) => {
     if (dragItem) {
-      assignToSlot(dragItem, slotIndex);
+      draftAssignToSlot(dragItem.id, slotIndex);
       setDragItem(null);
     }
   };
 
   const handleDropOnInactive = () => {
-    if (dragItem && dragItem.is_active) {
-      removeFromSlot(dragItem, dragItem.sort_order);
+    if (dragItem && draftSlotIds.has(dragItem.id)) {
+      const idx = draftSlots.indexOf(dragItem.id);
+      if (idx !== -1) draftRemoveFromSlot(idx);
       setDragItem(null);
     }
   };
@@ -320,17 +440,16 @@ const Admin = () => {
 
   return (
     <div className="min-h-screen bg-background p-6 md:p-10 relative">
-      {/* Abmelden oben rechts fixiert */}
       <Button variant="ghost" size="icon" onClick={handleLogout} title="Abmelden" className="absolute top-4 right-4">
         <LogOut className="w-5 h-5" />
       </Button>
 
-      <div className="max-w-5xl mx-auto">
+      <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-2xl font-bold text-foreground">Spendenaktionen verwalten</h1>
-            <p className="text-muted-foreground mt-1">Ziehe Aktionen auf die 3 Positionen oder entferne sie</p>
+            <p className="text-muted-foreground mt-1">Ziehe Aktionen auf die 3 Positionen, prüfe die Vorschau und schalte live</p>
           </div>
           <div className="flex items-center gap-3">
             <Button variant="outline" onClick={() => setShowHistory(!showHistory)} className="gap-2">
@@ -344,71 +463,116 @@ const Admin = () => {
           </div>
         </div>
 
-        {/* Active Slots */}
-        <div className="mb-8">
-          <h2 className="text-lg font-semibold text-foreground mb-4">Aktive Positionen im Kiosk</h2>
-          <div className="grid grid-cols-3 gap-6">
-            {slots.map((slot, i) => (
-              <div
-                key={i}
-                onDragOver={handleDragOver}
-                onDrop={() => handleDropOnSlot(i)}
-                className={`relative rounded-2xl border-2 border-dashed min-h-[200px] flex flex-col items-center justify-center transition-all ${
-                  slot
-                    ? "border-primary/30 bg-primary/5"
-                    : "border-muted-foreground/20 bg-muted/30"
-                } ${dragItem ? "ring-2 ring-primary/20" : ""}`}
-              >
-                {/* Position label */}
-                <div className="absolute top-3 left-3 text-xs font-bold text-muted-foreground uppercase tracking-wider">
-                  Position {i + 1} · {POSITION_LABELS[i]}
-                </div>
+        {/* Change indicator + publish bar */}
+        {hasChanges && (
+          <div className="mb-6 rounded-xl border-2 border-primary/30 bg-primary/5 p-4 flex items-center justify-between animate-fade-in">
+            <div className="flex items-center gap-3">
+              <div className="w-3 h-3 rounded-full bg-amber-500 animate-pulse" />
+              <span className="font-medium text-foreground">Entwurf – Änderungen sind noch nicht live</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Button variant="outline" size="sm" onClick={resetDraft} className="gap-2">
+                <RotateCcw className="w-3 h-3" />
+                Zurücksetzen
+              </Button>
+              <Button size="sm" onClick={publishDraft} disabled={publishing} className="gap-2">
+                <Rocket className="w-3 h-3" />
+                {publishing ? "Wird veröffentlicht..." : "Live schalten"}
+              </Button>
+            </div>
+          </div>
+        )}
 
-                {slot ? (
-                  <div
-                    draggable
-                    onDragStart={() => handleDragStart(slot)}
-                    className="w-full h-full p-5 pt-10 flex flex-col items-center justify-center cursor-grab active:cursor-grabbing"
-                  >
-                    <div className="flex items-center gap-1 mb-3 text-muted-foreground">
-                      <GripVertical className="w-4 h-4" />
-                    </div>
-                    <p className="text-lg font-bold text-foreground text-center leading-snug">{slot.title_de}</p>
-                    <p className="text-base text-muted-foreground text-center mt-1">{slot.title_bs}</p>
-                    <div className="flex gap-2 mt-4">
-                      <Button variant="ghost" size="sm" onClick={() => openEdit(slot)}>
-                        <Pencil className="w-3 h-3" />
-                      </Button>
-                      <Button variant="ghost" size="sm" onClick={() => removeFromSlot(slot, i)} className="text-destructive hover:text-destructive">
-                        <X className="w-3 h-3" />
-                      </Button>
-                    </div>
+        {/* Main layout: slots + preview side by side */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+          {/* Slots (2/3 width) */}
+          <div className="lg:col-span-2">
+            <h2 className="text-lg font-semibold text-foreground mb-4">
+              Entwurf – Positionen
+              {hasChanges && <span className="ml-2 text-xs font-normal text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full">Nicht gespeichert</span>}
+            </h2>
+            <div className="grid grid-cols-3 gap-4">
+              {draftSlotsPurposes.map((slot, i) => (
+                <div
+                  key={i}
+                  onDragOver={handleDragOver}
+                  onDrop={() => handleDropOnSlot(i)}
+                  className={`relative rounded-2xl border-2 border-dashed min-h-[180px] flex flex-col items-center justify-center transition-all ${
+                    slot
+                      ? "border-primary/30 bg-primary/5"
+                      : "border-muted-foreground/20 bg-muted/30"
+                  } ${dragItem ? "ring-2 ring-primary/20" : ""}`}
+                >
+                  <div className="absolute top-3 left-3 text-xs font-bold text-muted-foreground uppercase tracking-wider">
+                    {POSITION_LABELS[i]}
                   </div>
-                ) : (
-                  <div className="text-center text-muted-foreground/60 p-5">
-                    <p className="text-sm">Leer</p>
-                    <p className="text-xs mt-1">Ziehe eine Aktion hierher</p>
-                  </div>
-                )}
+
+                  {slot ? (
+                    <div
+                      draggable
+                      onDragStart={() => handleDragStart(slot)}
+                      className="w-full h-full p-4 pt-9 flex flex-col items-center justify-center cursor-grab active:cursor-grabbing"
+                    >
+                      <GripVertical className="w-4 h-4 text-muted-foreground mb-2" />
+                      <p className="text-base font-bold text-foreground text-center leading-snug">{slot.title_de}</p>
+                      <p className="text-sm text-muted-foreground text-center mt-1">{slot.title_bs}</p>
+                      <div className="flex gap-2 mt-3">
+                        <Button variant="ghost" size="sm" onClick={() => openEdit(slot)}>
+                          <Pencil className="w-3 h-3" />
+                        </Button>
+                        <Button variant="ghost" size="sm" onClick={() => draftRemoveFromSlot(i)} className="text-destructive hover:text-destructive">
+                          <X className="w-3 h-3" />
+                        </Button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="text-center text-muted-foreground/60 p-5">
+                      <p className="text-sm">Leer</p>
+                      <p className="text-xs mt-1">Ziehe eine Aktion hierher</p>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Live Preview (1/3 width) */}
+          <div>
+            <div className="flex items-center gap-2 mb-4">
+              <Eye className="w-4 h-4 text-muted-foreground" />
+              <h2 className="text-lg font-semibold text-foreground">Vorschau</h2>
+            </div>
+
+            <div className="space-y-4">
+              <div>
+                <p className="text-xs font-medium text-muted-foreground mb-2 uppercase tracking-wider">Entwurf</p>
+                <KioskPreview slots={draftSlotsPurposes} />
               </div>
-            ))}
+              <div>
+                <p className="text-xs font-medium text-muted-foreground mb-2 uppercase tracking-wider flex items-center gap-1">
+                  <span className="w-2 h-2 rounded-full bg-green-500 inline-block" />
+                  Aktuell Live
+                </p>
+                <KioskPreview slots={liveSlots} />
+              </div>
+            </div>
           </div>
         </div>
 
         {/* Inactive Pool */}
         <div
-          className={`mb-8 ${dragItem?.is_active ? "ring-2 ring-primary/20 rounded-xl" : ""}`}
+          className={`mb-8 ${dragItem && draftSlotIds.has(dragItem.id) ? "ring-2 ring-primary/20 rounded-xl" : ""}`}
           onDragOver={handleDragOver}
           onDrop={handleDropOnInactive}
         >
           <h2 className="text-lg font-semibold text-foreground mb-4">Verfügbare Aktionen</h2>
           {inactivePurposes.length === 0 ? (
             <div className="text-center py-8 text-muted-foreground border-2 border-dashed rounded-xl">
-              <p className="text-sm">Keine inaktiven Aktionen</p>
-              <p className="text-xs mt-1">Erstelle neue Aktionen oder entferne aktive</p>
+              <p className="text-sm">Keine verfügbaren Aktionen</p>
+              <p className="text-xs mt-1">Erstelle neue Aktionen oder entferne welche aus den Positionen</p>
             </div>
           ) : (
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               {inactivePurposes.map((p) => (
                 <div
                   key={p.id}
@@ -420,10 +584,10 @@ const Admin = () => {
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-2">
                         <GripVertical className="w-4 h-4 text-muted-foreground" />
-                        <span className="text-xs text-muted-foreground">Zum Zuweisen ziehen</span>
+                        <span className="text-xs text-muted-foreground">Ziehen</span>
                       </div>
-                      <p className="font-semibold text-foreground">{p.title_de}</p>
-                      <p className="text-sm text-muted-foreground">{p.title_bs}</p>
+                      <p className="font-semibold text-foreground text-sm">{p.title_de}</p>
+                      <p className="text-xs text-muted-foreground">{p.title_bs}</p>
                     </div>
                     <div className="flex gap-1 ml-2">
                       <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => openEdit(p)}>
