@@ -559,7 +559,7 @@ const Admin = () => {
               <p className="text-xs mt-1">Erstelle neue Aktionen oder entferne welche aus den Positionen</p>
             </div>
           ) : (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               {inactivePurposes.map((p) => (
                 <div
                   key={p.id}
