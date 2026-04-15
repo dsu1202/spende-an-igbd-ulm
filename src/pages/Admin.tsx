@@ -426,7 +426,7 @@ const Admin = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background p-4 md:p-6 lg:p-10 relative">
+    <div className="min-h-screen bg-background p-4 md:p-6 lg:p-10 relative overflow-auto h-screen">
       <Button variant="ghost" size="icon" onClick={handleLogout} title="Abmelden" className="absolute top-4 right-4 z-10">
         <LogOut className="w-5 h-5" />
       </Button>
