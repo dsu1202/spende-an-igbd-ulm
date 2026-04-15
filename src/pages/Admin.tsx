@@ -478,13 +478,13 @@ const Admin = () => {
               Entwurf – Positionen
               {hasChanges && <span className="ml-2 text-xs font-normal text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full">Nicht gespeichert</span>}
             </h2>
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               {draftSlotsPurposes.map((slot, i) => (
                 <div
                   key={i}
                   onDragOver={handleDragOver}
                   onDrop={() => handleDropOnSlot(i)}
-                  className={`relative rounded-2xl border-2 border-dashed min-h-[180px] flex flex-col items-center justify-center transition-all ${
+                  className={`relative rounded-2xl border-2 border-dashed min-h-[140px] sm:min-h-[180px] flex flex-col items-center justify-center transition-all ${
                     slot
                       ? "border-primary/30 bg-primary/5"
                       : "border-muted-foreground/20 bg-muted/30"
