@@ -94,29 +94,16 @@ const KioskPreview = ({ slots }: { slots: (DonationPurpose | null)[] }) => {
         <p className="text-sm font-bold text-foreground">Wofür möchtest du spenden?</p>
         <p className="text-xs text-muted-foreground">Za šta želiš dati sadaku?</p>
       </div>
-      <div className="flex gap-3 w-full max-w-md">
-        {[0, 1, 2].map((i) => {
-          const p = slots[i];
-          return (
-            <div
-              key={i}
-              className={`flex-1 rounded-xl flex flex-col items-center justify-center p-3 min-h-[80px] text-center ${
-                p
-                  ? "bg-primary text-primary-foreground"
-                  : "bg-muted/50 border border-dashed border-muted-foreground/20"
-              }`}
-            >
-              {p ? (
-                <>
-                  <span className="text-[10px] font-bold leading-tight">{p.title_de}</span>
-                  <span className="text-[9px] opacity-75 leading-tight mt-0.5">{p.title_bs}</span>
-                </>
-              ) : (
-                <span className="text-[9px] text-muted-foreground">Leer</span>
-              )}
-            </div>
-          );
-        })}
+      <div className="flex gap-3 w-full max-w-md justify-center">
+        {slots.filter(Boolean).map((p, i) => (
+          <div
+            key={i}
+            className="flex-1 max-w-[140px] rounded-xl flex flex-col items-center justify-center p-3 min-h-[80px] text-center bg-primary text-primary-foreground"
+          >
+            <span className="text-[10px] font-bold leading-tight">{p!.title_de}</span>
+            <span className="text-[9px] opacity-75 leading-tight mt-0.5">{p!.title_bs}</span>
+          </div>
+        ))}
       </div>
     </div>
   );

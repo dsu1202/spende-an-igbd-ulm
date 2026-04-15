@@ -52,7 +52,7 @@ const PurposeScreen = ({ onSelect }: Props) => {
         </p>
       </div>
 
-      <div className={`w-full max-w-4xl grid gap-8 ${purposes.length <= 3 ? "grid-cols-3" : "grid-cols-2 md:grid-cols-3"}`}>
+      <div className={`w-full max-w-4xl flex justify-center gap-8`}>
         {purposes.map((purpose) => (
           <button
             key={purpose.de}
