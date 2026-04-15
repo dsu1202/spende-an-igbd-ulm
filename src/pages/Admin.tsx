@@ -426,36 +426,36 @@ const Admin = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background p-6 md:p-10 relative">
-      <Button variant="ghost" size="icon" onClick={handleLogout} title="Abmelden" className="absolute top-4 right-4">
+    <div className="min-h-screen bg-background p-4 md:p-6 lg:p-10 relative">
+      <Button variant="ghost" size="icon" onClick={handleLogout} title="Abmelden" className="absolute top-4 right-4 z-10">
         <LogOut className="w-5 h-5" />
       </Button>
 
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-6xl mx-auto pr-10 md:pr-0">
         {/* Header */}
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
           <div>
-            <h1 className="text-2xl font-bold text-foreground">Spendenaktionen verwalten</h1>
-            <p className="text-muted-foreground mt-1">Ziehe Aktionen auf die 3 Positionen, prüfe die Vorschau und schalte live</p>
+            <h1 className="text-xl md:text-2xl font-bold text-foreground">Spendenaktionen verwalten</h1>
+            <p className="text-muted-foreground mt-1 text-sm md:text-base">Ziehe Aktionen auf die 3 Positionen, prüfe die Vorschau und schalte live</p>
           </div>
-          <div className="flex items-center gap-3">
-            <Button variant="outline" onClick={() => setShowHistory(!showHistory)} className="gap-2">
+          <div className="flex items-center gap-2">
+            <Button variant="outline" size="sm" onClick={() => setShowHistory(!showHistory)} className="gap-2">
               <History className="w-4 h-4" />
-              Verlauf
+              <span className="hidden sm:inline">Verlauf</span>
             </Button>
-            <Button onClick={openCreate} className="gap-2">
+            <Button size="sm" onClick={openCreate} className="gap-2">
               <Plus className="w-4 h-4" />
-              Neue Aktion
+              <span className="hidden sm:inline">Neue Aktion</span>
             </Button>
           </div>
         </div>
 
         {/* Change indicator + publish bar */}
         {hasChanges && (
-          <div className="mb-6 rounded-xl border-2 border-primary/30 bg-primary/5 p-4 flex items-center justify-between animate-fade-in">
+          <div className="mb-6 rounded-xl border-2 border-primary/30 bg-primary/5 p-3 md:p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 animate-fade-in">
             <div className="flex items-center gap-3">
-              <div className="w-3 h-3 rounded-full bg-amber-500 animate-pulse" />
-              <span className="font-medium text-foreground">Entwurf – Änderungen sind noch nicht live</span>
+              <div className="w-3 h-3 rounded-full bg-amber-500 animate-pulse flex-shrink-0" />
+              <span className="font-medium text-foreground text-sm md:text-base">Entwurf – noch nicht live</span>
             </div>
             <div className="flex items-center gap-2">
               <Button variant="outline" size="sm" onClick={resetDraft} className="gap-2">
@@ -464,7 +464,7 @@ const Admin = () => {
               </Button>
               <Button size="sm" onClick={publishDraft} disabled={publishing} className="gap-2">
                 <Rocket className="w-3 h-3" />
-                {publishing ? "Wird veröffentlicht..." : "Live schalten"}
+                {publishing ? "Veröffentlichen..." : "Live schalten"}
               </Button>
             </div>
           </div>
@@ -478,13 +478,13 @@ const Admin = () => {
               Entwurf – Positionen
               {hasChanges && <span className="ml-2 text-xs font-normal text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full">Nicht gespeichert</span>}
             </h2>
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               {draftSlotsPurposes.map((slot, i) => (
                 <div
                   key={i}
                   onDragOver={handleDragOver}
                   onDrop={() => handleDropOnSlot(i)}
-                  className={`relative rounded-2xl border-2 border-dashed min-h-[180px] flex flex-col items-center justify-center transition-all ${
+                  className={`relative rounded-2xl border-2 border-dashed min-h-[140px] sm:min-h-[180px] flex flex-col items-center justify-center transition-all ${
                     slot
                       ? "border-primary/30 bg-primary/5"
                       : "border-muted-foreground/20 bg-muted/30"
@@ -559,7 +559,7 @@ const Admin = () => {
               <p className="text-xs mt-1">Erstelle neue Aktionen oder entferne welche aus den Positionen</p>
             </div>
           ) : (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               {inactivePurposes.map((p) => (
                 <div
                   key={p.id}
