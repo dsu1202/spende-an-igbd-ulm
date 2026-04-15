@@ -595,45 +595,78 @@ const Admin = () => {
         {showHistory && (
           <div>
             <h2 className="text-lg font-semibold text-foreground mb-4">Verlauf</h2>
-            {history.length === 0 ? (
-              <p className="text-muted-foreground text-sm">Noch keine Einträge</p>
-            ) : (
-              <div className="rounded-xl border bg-card">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Zeitpunkt</TableHead>
-                      <TableHead>Aktion</TableHead>
-                      <TableHead>Position</TableHead>
-                      <TableHead>Spendenaktion</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {history.map((h) => (
-                      <TableRow key={h.id}>
-                        <TableCell className="text-sm text-muted-foreground whitespace-nowrap">
-                          {formatDate(h.created_at)}
-                        </TableCell>
-                        <TableCell>
-                          <span className={`text-xs font-medium px-2 py-1 rounded-full ${actionColor(h.action)}`}>
-                            {actionLabel(h.action)}
-                          </span>
-                        </TableCell>
-                        <TableCell className="font-medium">
-                          Position {h.position} · {POSITION_LABELS[h.position - 1]}
-                        </TableCell>
-                        <TableCell>
-                          <div>
-                            <span className="font-medium">{h.purpose_title_de}</span>
-                            <span className="text-muted-foreground ml-2 text-sm">/ {h.purpose_title_bs}</span>
-                          </div>
-                        </TableCell>
+            {(() => {
+              // Build time ranges: pair activated with next deactivated/moved
+              const ranges: { title_de: string; title_bs: string; position: number; from: string; to: string | null }[] = [];
+              // Sort history oldest first for pairing
+              const sorted = [...history].sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
+
+              // Track open activations per purpose+position
+              const open: Record<string, { title_de: string; title_bs: string; position: number; from: string }> = {};
+
+              for (const h of sorted) {
+                const key = `${h.purpose_title_de}__${h.position}`;
+                if (h.action === "activated") {
+                  open[key] = { title_de: h.purpose_title_de, title_bs: h.purpose_title_bs, position: h.position, from: h.created_at };
+                } else if (h.action === "deactivated" || h.action === "moved") {
+                  if (open[key]) {
+                    ranges.push({ ...open[key], to: h.created_at });
+                    delete open[key];
+                  }
+                }
+              }
+              // Still open = currently active
+              for (const key of Object.keys(open)) {
+                ranges.push({ ...open[key], to: null });
+              }
+
+              // Sort newest first
+              ranges.sort((a, b) => new Date(b.from).getTime() - new Date(a.from).getTime());
+
+              if (ranges.length === 0) {
+                return <p className="text-muted-foreground text-sm">Noch keine Einträge</p>;
+              }
+
+              return (
+                <div className="rounded-xl border bg-card">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Spendenaktion</TableHead>
+                        <TableHead>Position</TableHead>
+                        <TableHead>Von</TableHead>
+                        <TableHead>Bis</TableHead>
                       </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </div>
-            )}
+                    </TableHeader>
+                    <TableBody>
+                      {ranges.map((r, i) => (
+                        <TableRow key={i}>
+                          <TableCell>
+                            <div>
+                              <span className="font-medium">{r.title_de}</span>
+                              <span className="text-muted-foreground ml-2 text-sm">/ {r.title_bs}</span>
+                            </div>
+                          </TableCell>
+                          <TableCell className="font-medium">
+                            Position {r.position} · {POSITION_LABELS[r.position - 1]}
+                          </TableCell>
+                          <TableCell className="text-sm text-muted-foreground whitespace-nowrap">
+                            {formatDate(r.from)}
+                          </TableCell>
+                          <TableCell className="text-sm whitespace-nowrap">
+                            {r.to ? (
+                              <span className="text-muted-foreground">{formatDate(r.to)}</span>
+                            ) : (
+                              <span className="text-xs font-medium px-2 py-1 rounded-full text-green-600 bg-green-50">Aktiv</span>
+                            )}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              );
+            })()}
           </div>
         )}
 
