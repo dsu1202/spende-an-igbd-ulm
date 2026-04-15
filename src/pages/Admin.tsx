@@ -19,8 +19,9 @@ import {
   TableHead,
   TableCell,
 } from "@/components/ui/table";
-import { Plus, Pencil, Trash2 } from "lucide-react";
+import { Plus, Pencil, Trash2, LogOut } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import type { Session } from "@supabase/supabase-js";
 
 interface DonationPurpose {
   id: string;
@@ -32,13 +33,78 @@ interface DonationPurpose {
   updated_at: string;
 }
 
+const AdminLogin = ({ onLogin }: { onLogin: () => void }) => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) {
+      toast({ title: "Login fehlgeschlagen", description: error.message, variant: "destructive" });
+    } else {
+      onLogin();
+    }
+    setLoading(false);
+  };
+
+  return (
+    <div className="min-h-screen bg-background flex items-center justify-center p-6">
+      <div className="w-full max-w-sm">
+        <h1 className="text-2xl font-bold text-foreground text-center mb-6">Admin-Bereich</h1>
+        <form onSubmit={handleLogin} className="space-y-4">
+          <div className="space-y-2">
+            <Label>E-Mail</Label>
+            <Input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="admin@example.com"
+              required
+            />
+          </div>
+          <div className="space-y-2">
+            <Label>Passwort</Label>
+            <Input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="••••••••"
+              required
+            />
+          </div>
+          <Button type="submit" className="w-full" disabled={loading}>
+            {loading ? "Anmelden..." : "Anmelden"}
+          </Button>
+        </form>
+      </div>
+    </div>
+  );
+};
+
 const Admin = () => {
+  const [session, setSession] = useState<Session | null>(null);
+  const [authLoading, setAuthLoading] = useState(true);
   const [purposes, setPurposes] = useState<DonationPurpose[]>([]);
   const [loading, setLoading] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editing, setEditing] = useState<DonationPurpose | null>(null);
   const [titleDe, setTitleDe] = useState("");
   const [titleBs, setTitleBs] = useState("");
+
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+      setAuthLoading(false);
+    });
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setAuthLoading(false);
+    });
+    return () => subscription.unsubscribe();
+  }, []);
 
   const fetchPurposes = async () => {
     const { data, error } = await supabase
@@ -54,8 +120,12 @@ const Admin = () => {
   };
 
   useEffect(() => {
-    fetchPurposes();
-  }, []);
+    if (session) fetchPurposes();
+  }, [session]);
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+  };
 
   const openCreate = () => {
     setEditing(null);
@@ -139,6 +209,18 @@ const Admin = () => {
     });
   };
 
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  if (!session) {
+    return <AdminLogin onLogin={() => {}} />;
+  }
+
   return (
     <div className="min-h-screen bg-background p-6 md:p-10">
       <div className="max-w-4xl mx-auto">
@@ -147,10 +229,15 @@ const Admin = () => {
             <h1 className="text-2xl font-bold text-foreground">Spendenaktionen verwalten</h1>
             <p className="text-muted-foreground mt-1">Erstelle und verwalte die Spendemöglichkeiten für den Kiosk</p>
           </div>
-          <Button onClick={openCreate} className="gap-2">
-            <Plus className="w-4 h-4" />
-            Neue Aktion
-          </Button>
+          <div className="flex items-center gap-3">
+            <Button onClick={openCreate} className="gap-2">
+              <Plus className="w-4 h-4" />
+              Neue Aktion
+            </Button>
+            <Button variant="ghost" size="icon" onClick={handleLogout} title="Abmelden">
+              <LogOut className="w-4 h-4" />
+            </Button>
+          </div>
         </div>
 
         {loading ? (
@@ -174,7 +261,7 @@ const Admin = () => {
               </TableHeader>
               <TableBody>
                 {purposes.map((p) => (
-                  <TableRow key={p.id}>
+                  <TableRow key={p.id} className={!p.is_active ? "opacity-50" : ""}>
                     <TableCell className="font-medium">{p.title_de}</TableCell>
                     <TableCell>{p.title_bs}</TableCell>
                     <TableCell className="text-center">
