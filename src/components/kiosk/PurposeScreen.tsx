@@ -57,7 +57,7 @@ const PurposeScreen = ({ onSelect }: Props) => {
           <button
             key={purpose.de}
             onClick={() => onSelect(purpose)}
-            className="group relative overflow-hidden bg-gradient-to-br from-primary to-primary/85 text-primary-foreground rounded-3xl flex flex-col items-center justify-center aspect-square active:scale-95 transition-all duration-200 hover:shadow-lg px-8 gap-3"
+            className="group relative overflow-hidden bg-gradient-to-br from-primary to-primary/85 text-primary-foreground rounded-3xl flex flex-col items-center justify-center w-[280px] h-[280px] active:scale-95 transition-all duration-200 hover:shadow-lg px-8 gap-3"
           >
             <div className="absolute -top-6 -right-6 w-20 h-20 rounded-full bg-primary-foreground/10" />
             <span className="relative text-2xl font-extrabold font-heading text-center leading-snug">
