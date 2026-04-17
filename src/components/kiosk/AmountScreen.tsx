@@ -1,16 +1,36 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ArrowLeft, ArrowRight } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 interface Props {
   onConfirm: (amount: number) => void;
   onBack: () => void;
 }
 
-const amounts = [5, 10, 20, 50];
+const FALLBACK_AMOUNTS = [5, 10, 20, 50];
 
 const AmountScreen = ({ onConfirm, onBack }: Props) => {
   const [customMode, setCustomMode] = useState(false);
   const [customValue, setCustomValue] = useState("");
+  const [amounts, setAmounts] = useState<number[]>(FALLBACK_AMOUNTS);
+
+  useEffect(() => {
+    let active = true;
+    (async () => {
+      const { data, error } = await supabase
+        .from("preset_amounts")
+        .select("amount, sort_order, is_active")
+        .eq("is_active", true)
+        .order("sort_order", { ascending: true });
+      if (!active) return;
+      if (!error && data && data.length > 0) {
+        setAmounts(data.map((d) => d.amount));
+      }
+    })();
+    return () => {
+      active = false;
+    };
+  }, []);
 
   const handleSelect = (amt: number) => {
     onConfirm(amt);
@@ -47,7 +67,12 @@ const AmountScreen = ({ onConfirm, onBack }: Props) => {
 
       {!customMode ? (
         <>
-          <div className="grid grid-cols-4 gap-6 w-full max-w-3xl mb-12">
+          <div
+            className="grid gap-6 w-full max-w-3xl mb-12"
+            style={{
+              gridTemplateColumns: `repeat(${Math.min(Math.max(amounts.length, 1), 4)}, minmax(0, 1fr))`,
+            }}
+          >
             {amounts.map((amt) => (
               <button
                 key={amt}

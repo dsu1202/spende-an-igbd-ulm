@@ -7,11 +7,17 @@ import ThankYouScreen from "./ThankYouScreen";
 
 type Screen = "start" | "purpose" | "amount" | "payment" | "thankyou";
 
+interface PurposeItem {
+  id?: string;
+  de: string;
+  bs: string;
+}
+
 const INACTIVITY_TIMEOUT = 30000;
 
 const KioskApp = () => {
   const [screen, setScreen] = useState<Screen>("start");
-  const [purpose, setPurpose] = useState({ de: "", bs: "" });
+  const [purpose, setPurpose] = useState<PurposeItem>({ de: "", bs: "" });
   const [amount, setAmount] = useState(0);
   const inactivityTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -60,7 +66,13 @@ const KioskApp = () => {
         />
       )}
       {screen === "payment" && (
-        <PaymentScreen amount={amount} purpose={purpose} onSuccess={() => setScreen("thankyou")} onBack={() => setScreen("amount")} />
+        <PaymentScreen
+          amount={amount}
+          purpose={purpose}
+          purposeId={purpose.id}
+          onSuccess={() => setScreen("thankyou")}
+          onBack={() => setScreen("amount")}
+        />
       )}
       {screen === "thankyou" && (
         <ThankYouScreen onReset={() => { setAmount(0); setPurpose({ de: "", bs: "" }); setScreen("purpose"); }} />

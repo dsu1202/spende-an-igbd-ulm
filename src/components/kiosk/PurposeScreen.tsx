@@ -1,32 +1,38 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
-interface Props {
-  onSelect: (purpose: { de: string; bs: string }) => void;
+interface PurposeItem {
+  id?: string;
+  de: string;
+  bs: string;
 }
 
-const fallbackPurposes = [
+interface Props {
+  onSelect: (purpose: PurposeItem) => void;
+}
+
+const fallbackPurposes: PurposeItem[] = [
   { de: "Projekt Vakuf", bs: "Projekat Vakuf" },
   { de: "Spende an die Moschee", bs: "Sadaka za džamiju" },
   { de: "Spende an hilfsbedürftige Kinder in Bosnien", bs: "Sadaka za djecu u potrebi u Bosni" },
 ];
 
 const PurposeScreen = ({ onSelect }: Props) => {
-  const [purposes, setPurposes] = useState<{ de: string; bs: string }[]>([]);
+  const [purposes, setPurposes] = useState<PurposeItem[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetch = async () => {
       const { data, error } = await supabase
         .from("donation_purposes")
-        .select("title_de, title_bs")
+        .select("id, title_de, title_bs")
         .eq("is_active", true)
         .order("sort_order", { ascending: true });
 
       if (error || !data || data.length === 0) {
         setPurposes(fallbackPurposes);
       } else {
-        setPurposes(data.map((d) => ({ de: d.title_de, bs: d.title_bs })));
+        setPurposes(data.map((d) => ({ id: d.id, de: d.title_de, bs: d.title_bs })));
       }
       setLoading(false);
     };

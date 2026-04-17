@@ -18,9 +18,12 @@ import {
   TableHead,
   TableCell,
 } from "@/components/ui/table";
-import { Plus, Pencil, Trash2, LogOut, GripVertical, X, History, Rocket, RotateCcw, Eye } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Plus, Pencil, Trash2, LogOut, GripVertical, X, History, Rocket, RotateCcw, Eye, LayoutGrid, Receipt, Euro } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import type { Session } from "@supabase/supabase-js";
+import TransactionsTab from "./admin/TransactionsTab";
+import PresetAmountsTab from "./admin/PresetAmountsTab";
 
 interface DonationPurpose {
   id: string;
@@ -433,22 +436,45 @@ const Admin = () => {
 
       <div className="max-w-6xl mx-auto pr-10 md:pr-0">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
-          <div>
-            <h1 className="text-xl md:text-2xl font-bold text-foreground">Spendenaktionen verwalten</h1>
-            <p className="text-muted-foreground mt-1 text-sm md:text-base">Ziehe Aktionen auf die 3 Positionen, prüfe die Vorschau und schalte live</p>
-          </div>
-          <div className="flex items-center gap-2">
-            <Button variant="outline" size="sm" onClick={() => setShowHistory(!showHistory)} className="gap-2">
-              <History className="w-4 h-4" />
-              <span className="hidden sm:inline">Verlauf</span>
-            </Button>
-            <Button size="sm" onClick={openCreate} className="gap-2">
-              <Plus className="w-4 h-4" />
-              <span className="hidden sm:inline">Neue Aktion</span>
-            </Button>
-          </div>
+        <div className="mb-8">
+          <h1 className="text-xl md:text-2xl font-bold text-foreground">Admin-Bereich</h1>
+          <p className="text-muted-foreground mt-1 text-sm md:text-base">Spendenaktionen, Transaktionen und Beträge verwalten</p>
         </div>
+
+        <Tabs defaultValue="purposes" className="w-full">
+          <TabsList className="mb-6 w-full grid grid-cols-3 h-auto p-1">
+            <TabsTrigger value="purposes" className="gap-2 py-2.5">
+              <LayoutGrid className="w-4 h-4" />
+              <span>Spendenaktionen</span>
+            </TabsTrigger>
+            <TabsTrigger value="transactions" className="gap-2 py-2.5">
+              <Receipt className="w-4 h-4" />
+              <span>Transaktionen</span>
+            </TabsTrigger>
+            <TabsTrigger value="amounts" className="gap-2 py-2.5">
+              <Euro className="w-4 h-4" />
+              <span>Beträge</span>
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="purposes">
+            {/* Purposes action bar */}
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h2 className="text-lg font-semibold text-foreground">Spendenaktionen verwalten</h2>
+                <p className="text-muted-foreground mt-1 text-sm">Ziehe Aktionen auf die 3 Positionen, prüfe die Vorschau und schalte live</p>
+              </div>
+              <div className="flex items-center gap-2">
+                <Button variant="outline" size="sm" onClick={() => setShowHistory(!showHistory)} className="gap-2">
+                  <History className="w-4 h-4" />
+                  <span className="hidden sm:inline">Verlauf</span>
+                </Button>
+                <Button size="sm" onClick={openCreate} className="gap-2">
+                  <Plus className="w-4 h-4" />
+                  <span className="hidden sm:inline">Neue Aktion</span>
+                </Button>
+              </div>
+            </div>
 
         {/* Change indicator + publish bar */}
         {hasChanges && (
@@ -669,6 +695,16 @@ const Admin = () => {
             })()}
           </div>
         )}
+          </TabsContent>
+
+          <TabsContent value="transactions">
+            <TransactionsTab />
+          </TabsContent>
+
+          <TabsContent value="amounts">
+            <PresetAmountsTab />
+          </TabsContent>
+        </Tabs>
 
         {/* Create/Edit Dialog */}
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>

@@ -14,6 +14,83 @@ export type Database = {
   }
   public: {
     Tables: {
+      donations: {
+        Row: {
+          id: string
+          amount: number
+          currency: string
+          purpose_id: string | null
+          purpose_title_de: string
+          purpose_title_bs: string
+          status: string
+          sumup_tx_code: string | null
+          error_code: string | null
+          error_message: string | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          amount: number
+          currency?: string
+          purpose_id?: string | null
+          purpose_title_de: string
+          purpose_title_bs: string
+          status: string
+          sumup_tx_code?: string | null
+          error_code?: string | null
+          error_message?: string | null
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          amount?: number
+          currency?: string
+          purpose_id?: string | null
+          purpose_title_de?: string
+          purpose_title_bs?: string
+          status?: string
+          sumup_tx_code?: string | null
+          error_code?: string | null
+          error_message?: string | null
+          created_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "donations_purpose_id_fkey"
+            columns: ["purpose_id"]
+            isOneToOne: false
+            referencedRelation: "donation_purposes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      preset_amounts: {
+        Row: {
+          id: string
+          amount: number
+          sort_order: number
+          is_active: boolean
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          amount: number
+          sort_order?: number
+          is_active?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          amount?: number
+          sort_order?: number
+          is_active?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       donation_purposes: {
         Row: {
           created_at: string
