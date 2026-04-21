@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { ArrowLeft, AlertTriangle, RefreshCw } from "lucide-react";
+import { AlertTriangle, RefreshCw } from "lucide-react";
 import { startPayment, type PaymentResult } from "@/lib/sumup";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -126,14 +126,6 @@ const PaymentScreen = ({ amount, purpose, purposeId, onSuccess, onBack }: Props)
 
   return (
     <div className="relative flex flex-col items-center justify-center h-full px-12 animate-fade-in">
-      <button
-        onClick={onBack}
-        className="absolute top-20 left-24 text-lg font-semibold text-primary bg-primary/10 px-6 py-3 rounded-full hover:bg-primary/15 transition-colors flex items-center gap-2"
-      >
-        <ArrowLeft className="w-5 h-5" />
-        Zurück · Nazad
-      </button>
-
       <div className="rounded-full bg-primary/10 backdrop-blur-sm px-14 py-5 border border-primary/20 mb-4">
         <span className="text-7xl font-extrabold font-heading text-primary tracking-tight">
           {amount} €

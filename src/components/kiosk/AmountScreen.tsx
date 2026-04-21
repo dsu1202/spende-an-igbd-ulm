@@ -1,15 +1,14 @@
 import { useState, useEffect } from "react";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
 interface Props {
   onConfirm: (amount: number) => void;
-  onBack: () => void;
 }
 
 const FALLBACK_AMOUNTS = [5, 10, 20, 50];
 
-const AmountScreen = ({ onConfirm, onBack }: Props) => {
+const AmountScreen = ({ onConfirm }: Props) => {
   const [customMode, setCustomMode] = useState(false);
   const [customValue, setCustomValue] = useState("");
   const [amounts, setAmounts] = useState<number[]>(FALLBACK_AMOUNTS);
@@ -48,14 +47,7 @@ const AmountScreen = ({ onConfirm, onBack }: Props) => {
   };
 
   return (
-    <div className="relative flex flex-col items-center justify-center h-full px-12 animate-fade-in">
-      <button
-        onClick={onBack}
-        className="absolute top-20 left-24 text-lg font-semibold text-primary bg-primary/10 px-6 py-3 rounded-full hover:bg-primary/15 transition-colors flex items-center gap-2"
-      >
-        <ArrowLeft className="w-5 h-5" />
-        Zurück · Nazad
-      </button>
+    <div className="flex flex-col items-center justify-center h-full px-12 animate-fade-in">
       <div className="text-center mb-14">
         <h1 className="text-4xl font-extrabold font-heading text-foreground tracking-tight">
           Welchen Betrag möchtest du spenden?

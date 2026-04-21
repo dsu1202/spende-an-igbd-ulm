@@ -1,4 +1,5 @@
 import { useState, useCallback, useEffect, useRef } from "react";
+import { ArrowLeft } from "lucide-react";
 import StartScreen from "./StartScreen";
 import PurposeScreen from "./PurposeScreen";
 import AmountScreen from "./AmountScreen";
@@ -48,8 +49,28 @@ const KioskApp = () => {
     }
   }, [screen, resetInactivityTimer]);
 
+  // Shared top-left back button — rendered once at a fixed viewport position
+  // so it stays in the exact same spot on every screen that needs it.
+  const showBack = screen === "purpose" || screen === "amount" || screen === "payment";
+  const handleBack = () => {
+    if (screen === "purpose") setScreen("start");
+    else if (screen === "amount") setScreen("purpose");
+    else if (screen === "payment") setScreen("amount");
+  };
+
   return (
     <div className="h-full w-full overflow-hidden">
+      {showBack && (
+        <button
+          onClick={handleBack}
+          aria-label="Zurück"
+          className="fixed top-6 left-6 z-50 text-lg font-semibold text-primary bg-primary/10 px-6 py-3 rounded-full hover:bg-primary/15 transition-colors flex items-center gap-2"
+        >
+          <ArrowLeft className="w-5 h-5" />
+          Zurück · Nazad
+        </button>
+      )}
+
       {screen === "start" && (
         <StartScreen onStart={() => setScreen("purpose")} />
       )}
@@ -62,7 +83,6 @@ const KioskApp = () => {
             setAmount(a);
             setScreen("payment");
           }}
-          onBack={() => setScreen("purpose")}
         />
       )}
       {screen === "payment" && (
