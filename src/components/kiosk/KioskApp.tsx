@@ -59,7 +59,7 @@ const KioskApp = () => {
   };
 
   return (
-    <div className="h-full w-full overflow-hidden">
+    <div className={`h-full w-full overflow-hidden${showBack ? " pt-20" : ""}`}>
       {showBack && (
         <button
           onClick={handleBack}
