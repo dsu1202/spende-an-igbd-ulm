@@ -93,6 +93,28 @@ const TransactionsTab = () => {
     };
   }, [donations]);
 
+  // Per-project breakdown — only successful donations
+  const byProject = useMemo(() => {
+    const map = new Map<string, { de: string; bs: string; amount: number; count: number }>();
+    for (const d of donations) {
+      if (d.status !== "success") continue;
+      const key = d.purpose_title_de;
+      const existing = map.get(key);
+      if (existing) {
+        existing.amount += d.amount;
+        existing.count += 1;
+      } else {
+        map.set(key, {
+          de: d.purpose_title_de,
+          bs: d.purpose_title_bs,
+          amount: d.amount,
+          count: 1,
+        });
+      }
+    }
+    return Array.from(map.values()).sort((a, b) => b.amount - a.amount);
+  }, [donations]);
+
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
@@ -144,6 +166,39 @@ const TransactionsTab = () => {
           <p className="text-3xl font-bold text-foreground mt-1">{totals.attempts}</p>
         </div>
       </div>
+
+      {/* Per-project breakdown */}
+      {byProject.length > 0 && (
+        <div className="rounded-xl border bg-card p-5 space-y-4">
+          <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
+            Einnahmen nach Projekt
+          </h2>
+          <div className="space-y-3">
+            {byProject.map((p) => {
+              const pct = totals.total > 0 ? (p.amount / totals.total) * 100 : 0;
+              return (
+                <div key={p.de}>
+                  <div className="flex items-center justify-between mb-1">
+                    <div>
+                      <span className="text-sm font-medium text-foreground">{p.de}</span>
+                      <span className="text-xs text-muted-foreground ml-2">({p.count} ×)</span>
+                    </div>
+                    <span className="text-sm font-bold text-foreground tabular-nums">
+                      {p.amount.toFixed(2)} €
+                    </span>
+                  </div>
+                  <div className="h-2 rounded-full bg-muted overflow-hidden">
+                    <div
+                      className="h-full rounded-full bg-primary transition-all duration-500"
+                      style={{ width: `${pct}%` }}
+                    />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       {/* Header + refresh */}
       <div className="flex items-center justify-between">
