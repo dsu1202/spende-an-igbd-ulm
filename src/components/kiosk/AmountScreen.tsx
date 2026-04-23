@@ -83,10 +83,6 @@ const AmountScreen = ({ onConfirm }: Props) => {
           >
             Eigenen Betrag wählen · Izaberi drugu sumu
           </button>
-
-          <p className="text-base text-muted-foreground/70 mt-4">
-            Zahlung erfolgt am Kartenlesegerät neben dem Tablet · Plaćanje se vrši na čitaču kartica pored tableta
-          </p>
         </>
       ) : (
         <div className="flex items-center justify-center gap-8 w-full max-w-2xl">
