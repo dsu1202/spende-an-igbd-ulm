@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { AlertTriangle, RefreshCw } from "lucide-react";
+import { AlertTriangle, RefreshCw, ShieldCheck } from "lucide-react";
 import { startPayment, type PaymentResult } from "@/lib/sumup";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -133,6 +133,19 @@ const PaymentScreen = ({ amount, purpose, purposeId, onSuccess, onBack }: Props)
       </div>
       <p className="text-2xl font-semibold text-foreground mb-1">für {purpose.de}</p>
       <p className="text-2xl text-muted-foreground mb-10">za {purpose.bs}</p>
+
+      {/* Reassurance banner — shown on both error and payment states */}
+      <div className="flex items-center gap-3 bg-muted/60 border border-border rounded-2xl px-6 py-3 max-w-3xl w-full mb-6 text-muted-foreground">
+        <ShieldCheck className="w-6 h-6 flex-shrink-0 text-primary" />
+        <div>
+          <p className="text-base font-medium leading-snug">
+            Bitte bezahlen Sie am Kartenlesegerät neben diesem Tablet. Ihre Kartendaten werden nicht auf dem Tablet gespeichert.
+          </p>
+          <p className="text-sm opacity-75 leading-snug mt-0.5">
+            Molimo platite na čitaču kartica pored tableta. Podaci o kartici se ne čuvaju na tabletu.
+          </p>
+        </div>
+      </div>
 
       {state.kind === "error" ? (
         <div className="relative overflow-hidden rounded-3xl bg-destructive/10 border-2 border-destructive/40 text-foreground px-14 py-10 max-w-3xl w-full">
