@@ -48,7 +48,7 @@ const PurposeScreen = ({ onSelect }: Props) => {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center h-full px-12 animate-fade-in -mt-8">
+    <div className="flex flex-col items-center justify-center h-full px-12 animate-fade-in">
       <div className="text-center mb-14">
         <h1 className="text-4xl font-extrabold font-heading text-foreground tracking-tight">
           Wofür möchtest du spenden?
