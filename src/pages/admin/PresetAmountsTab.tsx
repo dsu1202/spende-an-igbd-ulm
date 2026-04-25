@@ -2,15 +2,7 @@ import { useEffect, useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-} from "@/components/ui/dialog";
-import { Plus, Trash2, RefreshCw, ArrowUp, ArrowDown } from "lucide-react";
+import { RefreshCw, Save } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
 interface PresetAmount {
@@ -22,17 +14,18 @@ interface PresetAmount {
 
 const PresetAmountsTab = () => {
   const [presets, setPresets] = useState<PresetAmount[]>([]);
+  const [editValues, setEditValues] = useState<Record<string, string>>({});
+  const [saving, setSaving] = useState<Record<string, boolean>>({});
   const [loading, setLoading] = useState(true);
   const [tableMissing, setTableMissing] = useState(false);
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [newAmount, setNewAmount] = useState("");
 
   const fetchPresets = useCallback(async () => {
     setLoading(true);
     const { data, error } = await supabase
       .from("preset_amounts")
       .select("*")
-      .order("sort_order", { ascending: true });
+      .order("sort_order", { ascending: true })
+      .limit(4);
     if (error) {
       if (error.code === "42P01" || /relation.*does not exist/i.test(error.message)) {
         setTableMissing(true);
@@ -42,7 +35,12 @@ const PresetAmountsTab = () => {
       setPresets([]);
     } else {
       setTableMissing(false);
-      setPresets(data || []);
+      const rows = data || [];
+      setPresets(rows);
+      // Initialise edit values from DB
+      const vals: Record<string, string> = {};
+      rows.forEach((p) => { vals[p.id] = String(p.amount); });
+      setEditValues(vals);
     }
     setLoading(false);
   }, []);
@@ -51,8 +49,9 @@ const PresetAmountsTab = () => {
     fetchPresets();
   }, [fetchPresets]);
 
-  const handleAdd = async () => {
-    const amount = parseInt(newAmount, 10);
+  const handleSave = async (p: PresetAmount) => {
+    const raw = editValues[p.id] ?? "";
+    const amount = parseInt(raw, 10);
     if (!amount || amount <= 0 || amount > 500) {
       toast({
         title: "Ungültiger Betrag",
@@ -61,74 +60,18 @@ const PresetAmountsTab = () => {
       });
       return;
     }
-    const maxOrder = presets.length > 0 ? Math.max(...presets.map((p) => p.sort_order)) : -1;
-    const { error } = await supabase.from("preset_amounts").insert({
-      amount,
-      sort_order: maxOrder + 1,
-      is_active: true,
-    });
-    if (error) {
-      toast({ title: "Fehler", description: error.message, variant: "destructive" });
-      return;
-    }
-    toast({ title: "Betrag hinzugefügt" });
-    setNewAmount("");
-    setDialogOpen(false);
-    fetchPresets();
-  };
-
-  const handleDelete = async (p: PresetAmount) => {
-    if (!confirm(`Betrag ${p.amount} € wirklich löschen?`)) return;
-    const { error } = await supabase.from("preset_amounts").delete().eq("id", p.id);
-    if (error) {
-      toast({ title: "Fehler", description: error.message, variant: "destructive" });
-      return;
-    }
-    toast({ title: "Gelöscht" });
-    fetchPresets();
-  };
-
-  const handleToggleActive = async (p: PresetAmount) => {
+    setSaving((s) => ({ ...s, [p.id]: true }));
     const { error } = await supabase
       .from("preset_amounts")
-      .update({ is_active: !p.is_active })
+      .update({ amount })
       .eq("id", p.id);
+    setSaving((s) => ({ ...s, [p.id]: false }));
     if (error) {
       toast({ title: "Fehler", description: error.message, variant: "destructive" });
       return;
     }
+    toast({ title: `Betrag auf ${amount} € aktualisiert` });
     fetchPresets();
-  };
-
-  const swapOrder = async (a: PresetAmount, b: PresetAmount) => {
-    // Swap sort_order between two rows
-    const { error: e1 } = await supabase
-      .from("preset_amounts")
-      .update({ sort_order: b.sort_order })
-      .eq("id", a.id);
-    const { error: e2 } = await supabase
-      .from("preset_amounts")
-      .update({ sort_order: a.sort_order })
-      .eq("id", b.id);
-    if (e1 || e2) {
-      toast({
-        title: "Fehler beim Sortieren",
-        description: (e1 || e2)!.message,
-        variant: "destructive",
-      });
-      return;
-    }
-    fetchPresets();
-  };
-
-  const moveUp = (i: number) => {
-    if (i === 0) return;
-    swapOrder(presets[i], presets[i - 1]);
-  };
-
-  const moveDown = (i: number) => {
-    if (i === presets.length - 1) return;
-    swapOrder(presets[i], presets[i + 1]);
   };
 
   if (loading) {
@@ -161,113 +104,51 @@ const PresetAmountsTab = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-lg font-semibold text-foreground">Voreingestellte Beträge</h2>
-          <p className="text-sm text-muted-foreground mt-1">
-            Diese Beträge werden auf dem Kiosk zur Auswahl angezeigt (max. 4 nebeneinander).
-          </p>
-        </div>
-        <Button size="sm" onClick={() => setDialogOpen(true)} className="gap-2">
-          <Plus className="w-4 h-4" />
-          Betrag hinzufügen
-        </Button>
+      <div>
+        <h2 className="text-lg font-semibold text-foreground">Voreingestellte Beträge</h2>
+        <p className="text-sm text-muted-foreground mt-1">
+          Betrag anpassen und auf Speichern klicken. Die vier Felder erscheinen in dieser Reihenfolge auf dem Kiosk.
+        </p>
       </div>
 
-      {presets.length === 0 ? (
-        <div className="rounded-xl border-2 border-dashed text-center py-12 text-muted-foreground">
-          <p className="text-sm">Keine Beträge konfiguriert</p>
-          <p className="text-xs mt-1">
-            Der Kiosk nutzt dann die Standard-Beträge 5 / 10 / 20 / 50 €.
-          </p>
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {presets.map((p, i) => (
-            <div
-              key={p.id}
-              className={`rounded-xl border bg-card p-4 flex flex-col gap-3 ${
-                !p.is_active ? "opacity-50" : ""
-              }`}
-            >
-              <div className="flex items-start justify-between">
-                <span className="text-3xl font-extrabold font-heading text-foreground">
-                  {p.amount} €
-                </span>
-                <div className="flex flex-col gap-1">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-6 w-6"
-                    onClick={() => moveUp(i)}
-                    disabled={i === 0}
-                    title="Nach oben"
-                  >
-                    <ArrowUp className="w-3 h-3" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-6 w-6"
-                    onClick={() => moveDown(i)}
-                    disabled={i === presets.length - 1}
-                    title="Nach unten"
-                  >
-                    <ArrowDown className="w-3 h-3" />
-                  </Button>
-                </div>
-              </div>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        {presets.map((p, i) => (
+          <div key={p.id} className="rounded-xl border bg-card p-5 flex flex-col gap-4">
+            <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+              Betrag {i + 1}
+            </p>
 
-              <div className="flex items-center justify-between">
-                <Button
-                  variant={p.is_active ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => handleToggleActive(p)}
-                  className="text-xs"
-                >
-                  {p.is_active ? "Aktiv" : "Inaktiv"}
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-8 w-8 text-destructive hover:text-destructive"
-                  onClick={() => handleDelete(p)}
-                >
-                  <Trash2 className="w-3 h-3" />
-                </Button>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-
-      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Neuen Betrag hinzufügen</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4 py-2">
-            <div className="space-y-2">
-              <Label>Betrag in Euro (1 – 500)</Label>
+            <div className="flex items-center gap-2">
               <Input
                 type="number"
                 min={1}
                 max={500}
-                value={newAmount}
-                onChange={(e) => setNewAmount(e.target.value)}
-                placeholder="z.B. 25"
-                autoFocus
+                value={editValues[p.id] ?? ""}
+                onChange={(e) =>
+                  setEditValues((v) => ({ ...v, [p.id]: e.target.value }))
+                }
+                onKeyDown={(e) => { if (e.key === "Enter") handleSave(p); }}
+                className="text-2xl font-extrabold font-heading h-12 text-center"
               />
+              <span className="text-xl font-bold text-muted-foreground">€</span>
             </div>
-          </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setDialogOpen(false)}>
-              Abbrechen
+
+            <Button
+              size="sm"
+              className="w-full gap-2"
+              disabled={saving[p.id] || editValues[p.id] === String(p.amount)}
+              onClick={() => handleSave(p)}
+            >
+              {saving[p.id] ? (
+                <RefreshCw className="w-3 h-3 animate-spin" />
+              ) : (
+                <Save className="w-3 h-3" />
+              )}
+              Speichern
             </Button>
-            <Button onClick={handleAdd}>Hinzufügen</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
