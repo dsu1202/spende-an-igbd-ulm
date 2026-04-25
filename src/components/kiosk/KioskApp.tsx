@@ -51,10 +51,9 @@ const KioskApp = () => {
 
   // Shared top-left back button — rendered once at a fixed viewport position
   // so it stays in the exact same spot on every screen that needs it.
-  const showBack = screen === "purpose" || screen === "amount" || screen === "payment";
+  const showBack = screen === "amount" || screen === "payment";
   const handleBack = () => {
-    if (screen === "purpose") setScreen("start");
-    else if (screen === "amount") setScreen("purpose");
+    if (screen === "amount") setScreen("purpose");
     else if (screen === "payment") setScreen("amount");
   };
 
