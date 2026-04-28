@@ -83,6 +83,11 @@ const AmountScreen = ({ onConfirm }: Props) => {
           >
             Eigenen Betrag wählen · Izaberi drugu sumu
           </button>
+
+          <p className="text-sm text-muted-foreground/50 mt-5 text-center">
+            Für diese Einzahlung ist keine Spendenbescheinigung möglich.<br />
+            Za ovu uplatu nije moguće izdati potvrdu o donaciji.
+          </p>
         </>
       ) : (
         <div className="flex items-center justify-center gap-8 w-full max-w-2xl">
