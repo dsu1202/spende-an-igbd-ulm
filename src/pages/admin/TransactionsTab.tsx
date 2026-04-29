@@ -446,9 +446,9 @@ const TransactionsTab = () => {
             </Button>
           </div>
 
-          {donations.length === 0 ? (
+          {successes.length === 0 ? (
             <div className="rounded-xl border-2 border-dashed text-center py-12 text-muted-foreground">
-              <p className="text-sm">Keine Transaktionen im gewählten Zeitraum</p>
+              <p className="text-sm">Keine erfolgreichen Zahlungen im gewählten Zeitraum</p>
             </div>
           ) : (
             <div className="rounded-xl border bg-card overflow-x-auto">
@@ -458,63 +458,37 @@ const TransactionsTab = () => {
                     <TableHead>Datum</TableHead>
                     <TableHead>Betrag</TableHead>
                     <TableHead>Zweck</TableHead>
-                    <TableHead>Status</TableHead>
                     {hasDeviceData && <TableHead>Gerät</TableHead>}
                     <TableHead>SumUp Code</TableHead>
-                    <TableHead>Fehler</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {donations.map((d) => {
-                    const sv = statusVariant(d.status);
-                    return (
-                      <TableRow key={d.id}>
-                        <TableCell className="whitespace-nowrap text-sm text-muted-foreground">
-                          {formatDateTime(d.created_at)}
+                  {successes.map((d) => (
+                    <TableRow key={d.id}>
+                      <TableCell className="whitespace-nowrap text-sm text-muted-foreground">
+                        {formatDateTime(d.created_at)}
+                      </TableCell>
+                      <TableCell className="font-semibold">
+                        {d.amount} {d.currency}
+                      </TableCell>
+                      <TableCell>
+                        <div className="max-w-[200px]">
+                          <p className="text-sm font-medium truncate">{d.purpose_title_de}</p>
+                          <p className="text-xs text-muted-foreground truncate">
+                            {d.purpose_title_bs}
+                          </p>
+                        </div>
+                      </TableCell>
+                      {hasDeviceData && (
+                        <TableCell className="text-xs text-muted-foreground whitespace-nowrap">
+                          {d.device_name ?? "—"}
                         </TableCell>
-                        <TableCell className="font-semibold">
-                          {d.amount} {d.currency}
-                        </TableCell>
-                        <TableCell>
-                          <div className="max-w-[200px]">
-                            <p className="text-sm font-medium truncate">{d.purpose_title_de}</p>
-                            <p className="text-xs text-muted-foreground truncate">
-                              {d.purpose_title_bs}
-                            </p>
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          <Badge variant="outline" className={sv.className}>
-                            {sv.label}
-                          </Badge>
-                        </TableCell>
-                        {hasDeviceData && (
-                          <TableCell className="text-xs text-muted-foreground whitespace-nowrap">
-                            {d.device_name ?? "—"}
-                          </TableCell>
-                        )}
-                        <TableCell className="text-xs font-mono text-muted-foreground">
-                          {d.sumup_tx_code || "—"}
-                        </TableCell>
-                        <TableCell className="text-xs">
-                          {d.error_code ? (
-                            <div>
-                              <span className="font-mono font-medium text-red-600">
-                                {d.error_code}
-                              </span>
-                              {d.error_message && (
-                                <p className="text-muted-foreground mt-0.5 max-w-[200px] truncate">
-                                  {d.error_message}
-                                </p>
-                              )}
-                            </div>
-                          ) : (
-                            "—"
-                          )}
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
+                      )}
+                      <TableCell className="text-xs font-mono text-muted-foreground">
+                        {d.sumup_tx_code || "—"}
+                      </TableCell>
+                    </TableRow>
+                  ))}
                 </TableBody>
               </Table>
             </div>
