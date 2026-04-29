@@ -26,6 +26,7 @@ export type Database = {
           sumup_tx_code: string | null
           error_code: string | null
           error_message: string | null
+          device_name: string | null
           created_at: string
         }
         Insert: {
@@ -39,6 +40,7 @@ export type Database = {
           sumup_tx_code?: string | null
           error_code?: string | null
           error_message?: string | null
+          device_name?: string | null
           created_at?: string
         }
         Update: {
@@ -52,6 +54,7 @@ export type Database = {
           sumup_tx_code?: string | null
           error_code?: string | null
           error_message?: string | null
+          device_name?: string | null
           created_at?: string
         }
         Relationships: [

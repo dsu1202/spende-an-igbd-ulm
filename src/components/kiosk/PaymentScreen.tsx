@@ -57,6 +57,20 @@ const errorMsg = (code?: string) => {
   return ERROR_COPY[c];
 };
 
+// Read device name injected by the native Android bridge (undefined in browser).
+const getDeviceName = (): string | null => {
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const bridge = (window as any).SumUpBridge;
+    if (bridge && typeof bridge.getDeviceName === "function") {
+      return bridge.getDeviceName() ?? null;
+    }
+  } catch {
+    // ignore
+  }
+  return null;
+};
+
 const logDonation = async (
   amount: number,
   purpose: { de: string; bs: string },
@@ -74,6 +88,7 @@ const logDonation = async (
       sumup_tx_code: result.txCode ?? null,
       error_code: result.errorCode ?? null,
       error_message: result.errorMessage ?? null,
+      device_name: getDeviceName(),
     });
   } catch (e) {
     // Logging must never break the payment UX.
