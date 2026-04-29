@@ -14,7 +14,7 @@ interface PurposeItem {
   bs: string;
 }
 
-const INACTIVITY_TIMEOUT = 30000;
+const INACTIVITY_TIMEOUT = 15000;
 
 const KioskApp = () => {
   const [screen, setScreen] = useState<Screen>("start");
