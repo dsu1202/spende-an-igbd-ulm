@@ -4,11 +4,12 @@ import { supabase } from "@/integrations/supabase/client";
 
 interface Props {
   onConfirm: (amount: number) => void;
+  purpose?: { de: string; bs: string };
 }
 
 const FALLBACK_AMOUNTS = [5, 10, 20, 50];
 
-const AmountScreen = ({ onConfirm }: Props) => {
+const AmountScreen = ({ onConfirm, purpose }: Props) => {
   const [customMode, setCustomMode] = useState(false);
   const [customValue, setCustomValue] = useState("");
   const [amounts, setAmounts] = useState<number[]>(FALLBACK_AMOUNTS);
@@ -70,6 +71,12 @@ const AmountScreen = ({ onConfirm }: Props) => {
           <p className="text-3xl text-muted-foreground mt-2">
             Koliko želiš dati sadake?
           </p>
+          {purpose?.de && (
+            <div className="mt-4">
+              <p className="text-base text-muted-foreground">für {purpose.de}</p>
+              <p className="text-base text-muted-foreground">za {purpose.bs}</p>
+            </div>
+          )}
         </div>
       )}
 
@@ -102,6 +109,12 @@ const AmountScreen = ({ onConfirm }: Props) => {
         </>
       ) : (
         <div className="flex flex-col items-center gap-4 w-full max-w-sm">
+          {purpose?.de && (
+            <div className="text-center -mb-1">
+              <p className="text-base text-muted-foreground">Spende für {purpose.de}</p>
+              <p className="text-base text-muted-foreground">Sadaka za {purpose.bs}</p>
+            </div>
+          )}
           {/* Amount display */}
           <div className="w-full rounded-2xl bg-card border border-border py-4 flex items-center justify-center gap-2" style={{ boxShadow: 'var(--shadow-card)' }}>
             <span className={`${displaySize(customValue)} font-extrabold font-heading text-foreground transition-all duration-150 min-w-[2ch] text-center`}>
