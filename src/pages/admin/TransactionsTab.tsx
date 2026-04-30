@@ -349,18 +349,18 @@ const TransactionsTab = () => {
       ) : (
         <>
           {/* Summary cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div className="rounded-xl border bg-card p-4">
-              <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium">Spenden gesamt</p>
-              <p className="text-3xl font-bold text-foreground mt-1">{totals.total.toFixed(2)} €</p>
+          <div className="grid grid-cols-3 gap-3">
+            <div className="rounded-xl border bg-card p-3 md:p-4">
+              <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium leading-tight">Spenden gesamt</p>
+              <p className="text-xl md:text-3xl font-bold text-foreground mt-1 tabular-nums">{totals.total.toFixed(2)} €</p>
             </div>
-            <div className="rounded-xl border bg-card p-4">
-              <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium">Erfolgreiche Zahlungen</p>
-              <p className="text-3xl font-bold text-foreground mt-1">{totals.count}</p>
+            <div className="rounded-xl border bg-card p-3 md:p-4">
+              <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium leading-tight">Zahlungen</p>
+              <p className="text-xl md:text-3xl font-bold text-foreground mt-1 tabular-nums">{totals.count}</p>
             </div>
-            <div className="rounded-xl border bg-card p-4">
-              <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium">Versuche insgesamt</p>
-              <p className="text-3xl font-bold text-foreground mt-1">{totals.attempts}</p>
+            <div className="rounded-xl border bg-card p-3 md:p-4">
+              <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium leading-tight">Versuche</p>
+              <p className="text-xl md:text-3xl font-bold text-foreground mt-1 tabular-nums">{totals.attempts}</p>
             </div>
           </div>
 
@@ -394,33 +394,23 @@ const TransactionsTab = () => {
             </div>
           )}
 
-          {/* Per-device breakdown — only when device_name data exists and no single-device filter active */}
+          {/* Per-device breakdown — card layout, works on all screen sizes */}
           {hasDeviceData && deviceFilter === "all" && byDevice.length > 0 && (
-            <div className="rounded-xl border bg-card p-5 space-y-4">
+            <div className="rounded-xl border bg-card p-4 md:p-5 space-y-3">
               <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
                 Einnahmen nach Gerät
               </h2>
-              <div className="overflow-x-auto">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Gerät</TableHead>
-                      <TableHead className="text-right">Erfolgreiche Zahlungen</TableHead>
-                      <TableHead className="text-right">Betrag</TableHead>
-                      <TableHead className="text-right">Versuche</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {byDevice.map((dev) => (
-                      <TableRow key={dev.name}>
-                        <TableCell className="font-medium">{dev.name}</TableCell>
-                        <TableCell className="text-right tabular-nums">{dev.count}</TableCell>
-                        <TableCell className="text-right font-bold tabular-nums">{dev.amount.toFixed(2)} €</TableCell>
-                        <TableCell className="text-right tabular-nums text-muted-foreground">{dev.attempts}</TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
+              <div className="space-y-2">
+                {byDevice.map((dev) => (
+                  <div key={dev.name} className="flex items-center justify-between gap-3 rounded-lg border bg-muted/30 px-4 py-3">
+                    <span className="font-semibold text-sm text-foreground truncate">{dev.name}</span>
+                    <div className="flex items-center gap-3 shrink-0 text-sm">
+                      <span className="tabular-nums font-bold text-foreground">{dev.amount.toFixed(2)} €</span>
+                      <span className="text-muted-foreground tabular-nums">{dev.count} ×</span>
+                      <span className="text-muted-foreground/60 tabular-nums text-xs">({dev.attempts})</span>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           )}
