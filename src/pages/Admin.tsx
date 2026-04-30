@@ -443,17 +443,17 @@ const Admin = () => {
 
         <Tabs defaultValue="purposes" className="w-full">
           <TabsList className="mb-6 w-full grid grid-cols-3 h-auto p-1">
-            <TabsTrigger value="purposes" className="gap-2 py-2.5">
-              <LayoutGrid className="w-4 h-4" />
-              <span>Spendenaktionen</span>
+            <TabsTrigger value="purposes" className="gap-1.5 py-2.5 flex-col sm:flex-row">
+              <LayoutGrid className="w-4 h-4 shrink-0" />
+              <span className="text-[11px] sm:text-sm leading-tight text-center">Aktionen</span>
             </TabsTrigger>
-            <TabsTrigger value="transactions" className="gap-2 py-2.5">
-              <Receipt className="w-4 h-4" />
-              <span>Transaktionen</span>
+            <TabsTrigger value="transactions" className="gap-1.5 py-2.5 flex-col sm:flex-row">
+              <Receipt className="w-4 h-4 shrink-0" />
+              <span className="text-[11px] sm:text-sm leading-tight text-center">Transaktionen</span>
             </TabsTrigger>
-            <TabsTrigger value="amounts" className="gap-2 py-2.5">
-              <Euro className="w-4 h-4" />
-              <span>Beträge</span>
+            <TabsTrigger value="amounts" className="gap-1.5 py-2.5 flex-col sm:flex-row">
+              <Euro className="w-4 h-4 shrink-0" />
+              <span className="text-[11px] sm:text-sm leading-tight text-center">Beträge</span>
             </TabsTrigger>
           </TabsList>
 

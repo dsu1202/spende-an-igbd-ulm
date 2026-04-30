@@ -352,7 +352,7 @@ const TransactionsTab = () => {
           <div className="grid grid-cols-3 gap-3">
             <div className="rounded-xl border bg-card p-3 md:p-4">
               <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium leading-tight">Spenden gesamt</p>
-              <p className="text-xl md:text-3xl font-bold text-foreground mt-1 tabular-nums">{totals.total.toFixed(2)} €</p>
+              <p className="text-base md:text-2xl font-bold text-foreground mt-1 tabular-nums whitespace-nowrap overflow-hidden text-ellipsis">{totals.total.toFixed(2)} €</p>
             </div>
             <div className="rounded-xl border bg-card p-3 md:p-4">
               <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium leading-tight">Zahlungen</p>
