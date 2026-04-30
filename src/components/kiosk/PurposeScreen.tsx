@@ -76,7 +76,7 @@ const PurposeScreen = ({ onSelect }: Props) => {
         ))}
       </div>
 
-      <p className="text-sm text-muted-foreground/50 mt-8 text-center">
+      <p className="text-base text-muted-foreground/50 mt-8 text-center">
         Für diese Einzahlung ist keine Spendenbescheinigung möglich.<br />
         Za ovu uplatu nije moguće izdati potvrdu o donaciji.
       </p>
