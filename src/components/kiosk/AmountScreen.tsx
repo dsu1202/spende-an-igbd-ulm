@@ -74,7 +74,7 @@ const AmountScreen = ({ onConfirm, purpose }: Props) => {
           {purpose?.de && (
             <div className="mt-4">
               <p className="text-base italic text-muted-foreground">für {purpose.de}</p>
-              <p className="text-base italic text-muted-foreground">za {purpose.bs}</p>
+              <p className="text-base italic text-muted-foreground/60">za {purpose.bs}</p>
             </div>
           )}
         </div>
@@ -112,7 +112,7 @@ const AmountScreen = ({ onConfirm, purpose }: Props) => {
           {purpose?.de && (
             <div className="absolute -top-24 left-1/2 -translate-x-1/2 text-center w-[150%] max-w-none">
               <p className="text-base italic text-muted-foreground whitespace-nowrap">Spende für {purpose.de}</p>
-              <p className="text-base italic text-muted-foreground whitespace-nowrap">Sadaka za {purpose.bs}</p>
+              <p className="text-base italic text-muted-foreground/60 whitespace-nowrap">Sadaka za {purpose.bs}</p>
             </div>
           )}
           {/* Amount display */}
