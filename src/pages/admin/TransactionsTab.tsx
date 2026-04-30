@@ -12,6 +12,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { RefreshCw } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+  CartesianGrid,
+} from "recharts";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -246,6 +255,58 @@ const TransactionsTab = () => {
     [donations],
   );
 
+  // Chart data — group successes by hour / day / month depending on range width
+  const chartData = useMemo(() => {
+    if (successes.length === 0) return [];
+
+    const msRange = range.to.getTime() - range.from.getTime();
+    const daysBetween = Math.ceil(msRange / (1000 * 60 * 60 * 24));
+
+    if (daysBetween <= 1) {
+      // Hourly — 24 buckets
+      const map = new Map<string, number>();
+      for (let h = 0; h < 24; h++) {
+        map.set(`${h.toString().padStart(2, "0")}:00`, 0);
+      }
+      for (const d of successes) {
+        const h = new Date(d.created_at).getHours();
+        const key = `${h.toString().padStart(2, "0")}:00`;
+        map.set(key, (map.get(key) ?? 0) + d.amount);
+      }
+      return Array.from(map.entries()).map(([label, amount]) => ({ label, amount }));
+    }
+
+    if (daysBetween <= 62) {
+      // Daily
+      const map = new Map<string, number>();
+      for (let i = 0; i < daysBetween; i++) {
+        const d = new Date(range.from);
+        d.setDate(d.getDate() + i);
+        const key = d.toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit" });
+        map.set(key, 0);
+      }
+      for (const d of successes) {
+        const key = new Date(d.created_at).toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit" });
+        if (map.has(key)) map.set(key, (map.get(key) ?? 0) + d.amount);
+      }
+      return Array.from(map.entries()).map(([label, amount]) => ({ label, amount }));
+    }
+
+    // Monthly
+    const map = new Map<string, number>();
+    const cursor = new Date(range.from.getFullYear(), range.from.getMonth(), 1);
+    while (cursor <= range.to) {
+      const key = cursor.toLocaleDateString("de-DE", { month: "short", year: "2-digit" });
+      map.set(key, 0);
+      cursor.setMonth(cursor.getMonth() + 1);
+    }
+    for (const d of successes) {
+      const key = new Date(d.created_at).toLocaleDateString("de-DE", { month: "short", year: "2-digit" });
+      if (map.has(key)) map.set(key, (map.get(key) ?? 0) + d.amount);
+    }
+    return Array.from(map.entries()).map(([label, amount]) => ({ label, amount }));
+  }, [successes, range]);
+
   // ---------------------------------------------------------------------------
   // Render
   // ---------------------------------------------------------------------------
@@ -363,6 +424,52 @@ const TransactionsTab = () => {
               <p className="text-xl md:text-3xl font-bold text-foreground mt-1 tabular-nums">{totals.attempts}</p>
             </div>
           </div>
+
+          {/* Donations chart */}
+          {chartData.length > 0 && chartData.some((d) => d.amount > 0) && (
+            <div className="rounded-xl border bg-card p-4 md:p-5">
+              <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-4">
+                Spendenverlauf
+              </h2>
+              <ResponsiveContainer width="100%" height={200}>
+                <BarChart data={chartData} margin={{ top: 4, right: 4, left: 0, bottom: 0 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(0,0%,90%)" vertical={false} />
+                  <XAxis
+                    dataKey="label"
+                    tick={{ fontSize: 11, fill: "hsl(0,0%,55%)" }}
+                    tickLine={false}
+                    axisLine={false}
+                    interval="preserveStartEnd"
+                  />
+                  <YAxis
+                    tick={{ fontSize: 11, fill: "hsl(0,0%,55%)" }}
+                    tickLine={false}
+                    axisLine={false}
+                    tickFormatter={(v) => `${v} €`}
+                    width={56}
+                  />
+                  <Tooltip
+                    cursor={{ fill: "hsl(149,61%,24%,0.06)" }}
+                    content={({ active, payload, label }) => {
+                      if (!active || !payload?.length) return null;
+                      return (
+                        <div className="rounded-lg border bg-card shadow-md px-3 py-2 text-sm">
+                          <p className="text-muted-foreground mb-1">{label}</p>
+                          <p className="font-bold text-foreground">{(payload[0].value as number).toFixed(2)} €</p>
+                        </div>
+                      );
+                    }}
+                  />
+                  <Bar
+                    dataKey="amount"
+                    fill="hsl(149,61%,24%)"
+                    radius={[4, 4, 0, 0]}
+                    maxBarSize={48}
+                  />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          )}
 
           {/* Per-project breakdown */}
           {byProject.length > 0 && (
