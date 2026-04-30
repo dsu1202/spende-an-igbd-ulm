@@ -35,10 +35,13 @@ const AmountScreen = ({ onConfirm }: Props) => {
     onConfirm(amt);
   };
 
-  const handleCustomInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const raw = e.target.value.replace(/[^0-9]/g, "");
-    const num = Number(raw);
-    if (num <= 500) setCustomValue(raw);
+  const handleNumpadPress = (key: string) => {
+    if (key === "backspace") {
+      setCustomValue((v) => v.slice(0, -1));
+      return;
+    }
+    const next = customValue + key;
+    if (Number(next) <= 500) setCustomValue(next);
   };
 
   const handleCustomConfirm = () => {
@@ -90,30 +93,51 @@ const AmountScreen = ({ onConfirm }: Props) => {
           </p>
         </>
       ) : (
-        <div className="flex items-center justify-center gap-8 w-full max-w-2xl">
-          <div className="flex-1 rounded-3xl bg-card border border-border p-8 flex items-center justify-center gap-3" style={{ boxShadow: 'var(--shadow-card)' }}>
-            <input
-              type="text"
-              inputMode="numeric"
-              pattern="[0-9]*"
-              autoFocus
-              placeholder="0"
-              value={customValue}
-              onChange={handleCustomInput}
-              maxLength={3}
-              className="w-48 text-6xl font-extrabold font-heading bg-transparent outline-none text-foreground placeholder:text-muted-foreground/30 text-center"
-            />
+        <div className="flex flex-col items-center gap-6 w-full max-w-xs">
+          {/* Amount display */}
+          <div className="w-full rounded-3xl bg-card border border-border py-5 flex items-center justify-center gap-3" style={{ boxShadow: 'var(--shadow-card)' }}>
+            <span className="text-6xl font-extrabold font-heading text-foreground min-w-[3ch] text-center">
+              {customValue || "0"}
+            </span>
             <span className="text-5xl font-bold text-muted-foreground">€</span>
           </div>
 
-          <button
-            onClick={handleCustomConfirm}
-            disabled={Number(customValue) <= 0}
-            className="flex-shrink-0 h-20 px-8 rounded-full bg-gradient-to-br from-primary to-primary/85 text-primary-foreground flex items-center justify-center gap-3 active:scale-95 transition-all shadow-lg disabled:opacity-30 disabled:scale-100"
-          >
-            <span className="text-xl font-bold">Weiter / Dalje</span>
-            <ArrowRight className="w-7 h-7" />
-          </button>
+          {/* Numpad grid */}
+          <div className="grid grid-cols-3 gap-3 w-full">
+            {["1","2","3","4","5","6","7","8","9"].map((k) => (
+              <button
+                key={k}
+                onClick={() => handleNumpadPress(k)}
+                className="aspect-square rounded-2xl bg-card border border-border text-3xl font-bold text-foreground active:scale-95 transition-all hover:bg-muted"
+              >
+                {k}
+              </button>
+            ))}
+            {/* Bottom row: backspace, 0, confirm */}
+            <button
+              onClick={() => handleNumpadPress("backspace")}
+              className="aspect-square rounded-2xl bg-card border border-border flex items-center justify-center active:scale-95 transition-all hover:bg-muted"
+            >
+              <svg className="w-7 h-7 text-foreground" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"/>
+                <line x1="18" y1="9" x2="12" y2="15"/>
+                <line x1="12" y1="9" x2="18" y2="15"/>
+              </svg>
+            </button>
+            <button
+              onClick={() => handleNumpadPress("0")}
+              className="aspect-square rounded-2xl bg-card border border-border text-3xl font-bold text-foreground active:scale-95 transition-all hover:bg-muted"
+            >
+              0
+            </button>
+            <button
+              onClick={handleCustomConfirm}
+              disabled={Number(customValue) <= 0}
+              className="aspect-square rounded-2xl bg-gradient-to-br from-primary to-primary/85 text-primary-foreground flex items-center justify-center active:scale-95 transition-all disabled:opacity-30 disabled:scale-100"
+            >
+              <ArrowRight className="w-8 h-8" />
+            </button>
+          </div>
         </div>
       )}
     </div>
