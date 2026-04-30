@@ -475,7 +475,7 @@ const TransactionsTab = () => {
           {byProject.length > 0 && (
             <div className="rounded-xl border bg-card p-5 space-y-4">
               <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
-                Einnahmen nach Projekt
+                Spenden nach Projekt
               </h2>
               <div className="space-y-3">
                 {byProject.map((p) => {
@@ -505,7 +505,7 @@ const TransactionsTab = () => {
           {hasDeviceData && deviceFilter === "all" && byDevice.length > 0 && (
             <div className="rounded-xl border bg-card p-4 md:p-5 space-y-3">
               <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
-                Einnahmen nach Gerät
+                Spenden nach Gerät
               </h2>
               <div className="space-y-2">
                 {byDevice.map((dev) => (
