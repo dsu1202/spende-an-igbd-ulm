@@ -62,7 +62,7 @@ const AmountScreen = ({ onConfirm, purpose }: Props) => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-start h-full px-12 pt-16 animate-fade-in">
+    <div className={`flex flex-col items-center h-full px-12 animate-fade-in ${customMode ? "justify-center" : "justify-start pt-16"}`}>
       {!customMode && (
         <div className="text-center mb-8">
           <h1 className="text-4xl font-extrabold font-heading text-foreground tracking-tight">
