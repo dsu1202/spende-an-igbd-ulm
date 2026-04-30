@@ -277,13 +277,13 @@ const TransactionsTab = () => {
       <div className="flex flex-wrap items-end gap-4">
         {/* Period dropdown */}
         <div className="flex flex-col gap-1">
-          <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+          <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider text-center">
             Zeitraum
           </label>
           <select
             value={period}
             onChange={(e) => setPeriod(e.target.value as Period)}
-            className="h-9 rounded-lg border border-border bg-card px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 cursor-pointer"
+            className="h-9 rounded-lg border border-border bg-card pl-3 pr-8 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 cursor-pointer"
           >
             {PERIOD_OPTIONS.map((o) => (
               <option key={o.id} value={o.id}>{o.label}</option>
@@ -294,13 +294,13 @@ const TransactionsTab = () => {
         {/* Tablet dropdown — only shown when device data exists */}
         {hasDeviceData && (
           <div className="flex flex-col gap-1">
-            <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+            <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider text-center">
               Gerät
             </label>
             <select
               value={deviceFilter}
               onChange={(e) => setDeviceFilter(e.target.value)}
-              className="h-9 rounded-lg border border-border bg-card px-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 cursor-pointer"
+              className="h-9 rounded-lg border border-border bg-card pl-3 pr-8 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 cursor-pointer"
             >
               <option value="all">Alle Geräte</option>
               {deviceNames.map((name) => (
