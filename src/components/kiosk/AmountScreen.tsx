@@ -64,7 +64,7 @@ const AmountScreen = ({ onConfirm, purpose }: Props) => {
   return (
     <div className="flex flex-col items-center justify-center h-full px-12 animate-fade-in">
       {!customMode && (
-        <div className="text-center mb-14">
+        <div className="text-center mb-8">
           <h1 className="text-4xl font-extrabold font-heading text-foreground tracking-tight">
             Welchen Betrag möchtest du spenden?
           </h1>
