@@ -35,30 +35,43 @@ const AmountScreen = ({ onConfirm }: Props) => {
     onConfirm(amt);
   };
 
+  const MAX_CUSTOM = 99999;
+
   const handleNumpadPress = (key: string) => {
     if (key === "backspace") {
       setCustomValue((v) => v.slice(0, -1));
       return;
     }
     const next = customValue + key;
-    if (Number(next) <= 500) setCustomValue(next);
+    if (next.length <= 5 && Number(next) <= MAX_CUSTOM) setCustomValue(next);
   };
 
   const handleCustomConfirm = () => {
     const val = Number(customValue);
-    if (val > 0 && val <= 500) onConfirm(val);
+    if (val > 0 && val <= MAX_CUSTOM) onConfirm(val);
+  };
+
+  // Auto-scale display font based on digit count
+  const displaySize = (val: string) => {
+    const len = (val || "0").length;
+    if (len <= 2) return "text-6xl";
+    if (len <= 3) return "text-5xl";
+    if (len <= 4) return "text-4xl";
+    return "text-3xl";
   };
 
   return (
     <div className="flex flex-col items-center justify-center h-full px-12 animate-fade-in">
-      <div className="text-center mb-14">
-        <h1 className="text-4xl font-extrabold font-heading text-foreground tracking-tight">
-          Welchen Betrag möchtest du spenden?
-        </h1>
-        <p className="text-3xl text-muted-foreground mt-2">
-          Koliko želiš dati sadake?
-        </p>
-      </div>
+      {!customMode && (
+        <div className="text-center mb-14">
+          <h1 className="text-4xl font-extrabold font-heading text-foreground tracking-tight">
+            Welchen Betrag möchtest du spenden?
+          </h1>
+          <p className="text-3xl text-muted-foreground mt-2">
+            Koliko želiš dati sadake?
+          </p>
+        </div>
+      )}
 
       {!customMode ? (
         <>
@@ -93,32 +106,32 @@ const AmountScreen = ({ onConfirm }: Props) => {
           </p>
         </>
       ) : (
-        <div className="flex flex-col items-center gap-6 w-full max-w-xs">
+        <div className="flex flex-col items-center gap-4 w-full max-w-sm">
           {/* Amount display */}
-          <div className="w-full rounded-3xl bg-card border border-border py-5 flex items-center justify-center gap-3" style={{ boxShadow: 'var(--shadow-card)' }}>
-            <span className="text-6xl font-extrabold font-heading text-foreground min-w-[3ch] text-center">
+          <div className="w-full rounded-2xl bg-card border border-border py-4 flex items-center justify-center gap-2" style={{ boxShadow: 'var(--shadow-card)' }}>
+            <span className={`${displaySize(customValue)} font-extrabold font-heading text-foreground transition-all duration-150 min-w-[2ch] text-center`}>
               {customValue || "0"}
             </span>
-            <span className="text-5xl font-bold text-muted-foreground">€</span>
+            <span className="text-4xl font-bold text-muted-foreground">€</span>
           </div>
 
-          {/* Numpad grid */}
-          <div className="grid grid-cols-3 gap-3 w-full">
+          {/* Numpad grid — fixed height rows, not aspect-square */}
+          <div className="grid grid-cols-3 gap-2 w-full">
             {["1","2","3","4","5","6","7","8","9"].map((k) => (
               <button
                 key={k}
                 onClick={() => handleNumpadPress(k)}
-                className="aspect-square rounded-2xl bg-card border border-border text-3xl font-bold text-foreground active:scale-95 transition-all hover:bg-muted"
+                className="h-14 rounded-xl bg-card border border-border text-2xl font-bold text-foreground active:scale-95 transition-all hover:bg-muted"
               >
                 {k}
               </button>
             ))}
-            {/* Bottom row: backspace, 0, confirm */}
+            {/* Bottom row: backspace · 0 · confirm */}
             <button
               onClick={() => handleNumpadPress("backspace")}
-              className="aspect-square rounded-2xl bg-card border border-border flex items-center justify-center active:scale-95 transition-all hover:bg-muted"
+              className="h-14 rounded-xl bg-card border border-border flex items-center justify-center active:scale-95 transition-all hover:bg-muted"
             >
-              <svg className="w-7 h-7 text-foreground" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <svg className="w-6 h-6 text-foreground" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"/>
                 <line x1="18" y1="9" x2="12" y2="15"/>
                 <line x1="12" y1="9" x2="18" y2="15"/>
@@ -126,18 +139,25 @@ const AmountScreen = ({ onConfirm }: Props) => {
             </button>
             <button
               onClick={() => handleNumpadPress("0")}
-              className="aspect-square rounded-2xl bg-card border border-border text-3xl font-bold text-foreground active:scale-95 transition-all hover:bg-muted"
+              className="h-14 rounded-xl bg-card border border-border text-2xl font-bold text-foreground active:scale-95 transition-all hover:bg-muted"
             >
               0
             </button>
             <button
               onClick={handleCustomConfirm}
               disabled={Number(customValue) <= 0}
-              className="aspect-square rounded-2xl bg-gradient-to-br from-primary to-primary/85 text-primary-foreground flex items-center justify-center active:scale-95 transition-all disabled:opacity-30 disabled:scale-100"
+              className="h-14 rounded-xl bg-gradient-to-br from-primary to-primary/85 text-primary-foreground flex items-center justify-center active:scale-95 transition-all disabled:opacity-30 disabled:scale-100"
             >
-              <ArrowRight className="w-8 h-8" />
+              <ArrowRight className="w-6 h-6" />
             </button>
           </div>
+
+          <button
+            onClick={() => { setCustomMode(false); setCustomValue(""); }}
+            className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+          >
+            ← Zurück zu den Beträgen
+          </button>
         </div>
       )}
     </div>
