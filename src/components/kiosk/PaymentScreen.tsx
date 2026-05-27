@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { AlertTriangle, RefreshCw } from "lucide-react";
 import { startPayment, type PaymentResult } from "@/lib/sumup";
-import { supabase } from "@/integrations/supabase/client";
+import { logDonationOrQueue } from "@/lib/donationQueue";
 
 interface Props {
   amount: number;
@@ -77,25 +77,19 @@ const logDonation = async (
   purposeId: string | undefined,
   result: PaymentResult,
 ) => {
-  try {
-    await supabase.from("donations").insert({
-      amount,
-      currency: "EUR",
-      purpose_id: purposeId ?? null,
-      purpose_title_de: purpose.de,
-      purpose_title_bs: purpose.bs,
-      status: result.status,
-      sumup_tx_code: result.txCode ?? null,
-      error_code: result.errorCode ?? null,
-      error_message: result.errorMessage ?? null,
-      device_name: getDeviceName(),
-    });
-  } catch (e) {
-    // Logging must never break the payment UX.
-    // Native app also keeps a local log, so we don't lose data.
-    // eslint-disable-next-line no-console
-    console.error("Failed to log donation", e);
-  }
+  await logDonationOrQueue({
+    amount,
+    currency: "EUR",
+    purpose_id: purposeId ?? null,
+    purpose_title_de: purpose.de,
+    purpose_title_bs: purpose.bs,
+    status: result.status,
+    sumup_tx_code: result.txCode ?? null,
+    error_code: result.errorCode ?? null,
+    error_message: result.errorMessage ?? null,
+    device_name: getDeviceName(),
+    created_at: new Date().toISOString(),
+  });
 };
 
 const PaymentScreen = ({ amount, purpose, purposeId, onSuccess, onBack }: Props) => {
